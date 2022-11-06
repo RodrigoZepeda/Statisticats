@@ -1,7 +1,7 @@
 ---
 title: "Regresiones (parte 1)"
 date: "2022-11-06"
-categories: [regresiones / regresión lineal / rstats / R, español / Spanish]
+categories: [regresiones / regression, regresión lineal / linear regression, R, español / Spanish, diagnóstico de modelos / model diagnosis]
 image: "quetelet.jpg"
 lang: es
 abstract: "En esta entrada discutimos los fundamentos de una regresión lineal (punto de vista probabilístico) así como su programación y diagnóstico en `R`"

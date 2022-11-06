@@ -508,23 +508,23 @@ Model Info:
 
 Estimates:
               mean   sd   10%   50%   90%
-(Intercept) 4.3    2.6  1.0   4.2   7.5  
+(Intercept) 4.3    2.6  0.9   4.3   7.7  
 PovPct      1.4    0.2  1.1   1.4   1.6  
-sigma       5.6    0.6  4.9   5.6   6.4  
+sigma       5.7    0.6  4.9   5.6   6.4  
 
 Fit Diagnostics:
            mean   sd   10%   50%   90%
-mean_PPD 22.3    1.1 20.8  22.2  23.7 
+mean_PPD 22.3    1.1 20.9  22.3  23.7 
 
 The mean_ppd is the sample average posterior predictive distribution of the outcome variable (for details see help('summary.stanreg')).
 
 MCMC diagnostics
               mcse Rhat n_eff
-(Intercept)   0.0  1.0  3526 
-PovPct        0.0  1.0  3732 
-sigma         0.0  1.0  3292 
-mean_PPD      0.0  1.0  3411 
-log-posterior 0.0  1.0  1595 
+(Intercept)   0.0  1.0  4252 
+PovPct        0.0  1.0  4286 
+sigma         0.0  1.0  3968 
+mean_PPD      0.0  1.0  4057 
+log-posterior 0.0  1.0  1705 
 
 For each parameter, mcse is Monte Carlo standard error, n_eff is a crude measure of effective sample size, and Rhat is the potential scale reduction factor on split chains (at convergence Rhat=1).</code></pre>
 </div>
@@ -573,7 +573,7 @@ Computed from 4000 by 51 log-likelihood matrix
          Estimate  SE
 elpd_loo   -161.6 4.2
 p_loo         2.4 0.5
-looic       323.2 8.5
+looic       323.3 8.4
 ------
 Monte Carlo SE of elpd_loo is 0.0.
 
@@ -603,8 +603,11 @@ See help('pareto-k-diagnostic') for details.</code></pre>
 </section>
 
  ]]></description>
-  <category>regresiones / regresión lineal / rstats / R</category>
+  <category>regresiones / regression</category>
+  <category>regresión lineal / linear regression</category>
+  <category>R</category>
   <category>español / Spanish</category>
+  <category>diagnóstico de modelos / model diagnosis</category>
   <guid>https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index.html</guid>
   <pubDate>Sun, 06 Nov 2022 06:00:00 GMT</pubDate>
   <media:content url="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/quetelet.jpg" medium="image" type="image/jpeg"/>
