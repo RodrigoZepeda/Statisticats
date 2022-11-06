@@ -508,23 +508,23 @@ Model Info:
 
 Estimates:
               mean   sd   10%   50%   90%
-(Intercept) 4.3    2.6  0.9   4.3   7.6  
+(Intercept) 4.3    2.6  1.0   4.2   7.5  
 PovPct      1.4    0.2  1.1   1.4   1.6  
-sigma       5.6    0.6  5.0   5.6   6.4  
+sigma       5.6    0.6  4.9   5.6   6.4  
 
 Fit Diagnostics:
            mean   sd   10%   50%   90%
-mean_PPD 22.3    1.1 20.8  22.3  23.7 
+mean_PPD 22.3    1.1 20.8  22.2  23.7 
 
 The mean_ppd is the sample average posterior predictive distribution of the outcome variable (for details see help('summary.stanreg')).
 
 MCMC diagnostics
               mcse Rhat n_eff
-(Intercept)   0.0  1.0  3485 
-PovPct        0.0  1.0  3441 
-sigma         0.0  1.0  3547 
-mean_PPD      0.0  1.0  3977 
-log-posterior 0.0  1.0  1709 
+(Intercept)   0.0  1.0  3526 
+PovPct        0.0  1.0  3732 
+sigma         0.0  1.0  3292 
+mean_PPD      0.0  1.0  3411 
+log-posterior 0.0  1.0  1595 
 
 For each parameter, mcse is Monte Carlo standard error, n_eff is a crude measure of effective sample size, and Rhat is the potential scale reduction factor on split chains (at convergence Rhat=1).</code></pre>
 </div>
@@ -573,7 +573,7 @@ Computed from 4000 by 51 log-likelihood matrix
          Estimate  SE
 elpd_loo   -161.6 4.2
 p_loo         2.4 0.5
-looic       323.2 8.4
+looic       323.2 8.5
 ------
 Monte Carlo SE of elpd_loo is 0.0.
 
@@ -597,198 +597,9 @@ See help('pareto-k-diagnostic') for details.</code></pre>
 <ol type="1">
 <li>Utilice las opciones de <code>engine</code> para cambiar el <code>prior_intercept</code> del intercepto a una <code>t</code> de Student y el <code>prior</code> de los coeficientes a una <code>Laplace</code>. ¿Cambia mucho el resultado?</li>
 </ol>
+
+
 </section>
-</section>
-<section id="sistema" class="level1">
-<h1>Sistema</h1>
-<div class="cell">
-<details>
-<summary>Código</summary>
-<div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1">sessioninfo<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">session_info</span>()</span></code></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>─ Session info ───────────────────────────────────────────────────────────────
- setting  value
- version  R version 4.2.1 (2022-06-23)
- os       macOS Big Sur ... 10.16
- system   x86_64, darwin17.0
- ui       X11
- language (EN)
- collate  en_US.UTF-8
- ctype    en_US.UTF-8
- tz       America/Mexico_City
- date     2022-11-06
- pandoc   2.19.2 @ /Applications/RStudio.app/Contents/MacOS/quarto/bin/tools/ (via rmarkdown)
-
-─ Packages ───────────────────────────────────────────────────────────────────
- ! package       * version    date (UTC) lib source
- P assertthat      0.2.1      2019-03-21 [?] CRAN (R 4.2.0)
- P backports       1.4.1      2021-12-13 [?] CRAN (R 4.2.0)
- P base64enc       0.1-3      2015-07-28 [?] CRAN (R 4.2.0)
- P bayesplot       1.9.0      2022-03-10 [?] CRAN (R 4.2.0)
- P bit             4.0.4      2020-08-04 [?] CRAN (R 4.2.0)
- P bit64           4.0.5      2020-08-30 [?] CRAN (R 4.2.0)
- P boot            1.3-28     2021-05-03 [?] CRAN (R 4.2.1)
- P broom         * 1.0.1      2022-08-29 [?] CRAN (R 4.2.0)
- P cachem          1.0.6      2021-08-19 [?] CRAN (R 4.2.0)
- P callr           3.7.2      2022-08-22 [?] CRAN (R 4.2.0)
- P cellranger      1.1.0      2016-07-27 [?] CRAN (R 4.2.0)
- P class           7.3-20     2022-01-16 [?] CRAN (R 4.2.1)
- P cli             3.4.1      2022-09-23 [?] CRAN (R 4.2.0)
- P codetools       0.2-18     2020-11-04 [?] CRAN (R 4.2.1)
- P colorspace      2.0-3      2022-02-21 [?] CRAN (R 4.2.0)
- P colourpicker    1.2.0      2022-10-28 [?] CRAN (R 4.2.0)
- P conflicted      1.1.0      2021-11-26 [?] CRAN (R 4.2.0)
- P cowplot       * 1.1.1      2020-12-30 [?] CRAN (R 4.2.0)
- P crayon          1.5.2      2022-09-29 [?] CRAN (R 4.2.0)
- P crosstalk       1.2.0      2021-11-04 [?] CRAN (R 4.2.0)
- P curl            4.3.3      2022-10-06 [?] CRAN (R 4.2.1)
- P DBI             1.1.3      2022-06-18 [?] CRAN (R 4.2.0)
- P dbplyr          2.2.1      2022-06-27 [?] CRAN (R 4.2.0)
- P dials         * 1.1.0      2022-11-04 [?] CRAN (R 4.2.1)
- P DiceDesign      1.9        2021-02-13 [?] CRAN (R 4.2.0)
- P digest          0.6.29     2021-12-01 [?] CRAN (R 4.2.0)
- P dplyr         * 1.0.10     2022-09-01 [?] CRAN (R 4.2.0)
- P DT              0.26       2022-10-19 [?] CRAN (R 4.2.0)
- P dygraphs        1.1.1.6    2018-07-11 [?] CRAN (R 4.2.0)
- P ellipsis        0.3.2      2021-04-29 [?] CRAN (R 4.2.0)
- P evaluate        0.16       2022-08-09 [?] CRAN (R 4.2.0)
- P fansi           1.0.3      2022-03-24 [?] CRAN (R 4.2.0)
- P farver          2.1.1      2022-07-06 [?] CRAN (R 4.2.0)
- P fastmap         1.1.0      2021-01-25 [?] CRAN (R 4.2.0)
- P forcats       * 0.5.2      2022-08-19 [?] CRAN (R 4.2.0)
- P foreach         1.5.2      2022-02-02 [?] CRAN (R 4.2.0)
- P fs              1.5.2      2021-12-08 [?] CRAN (R 4.2.0)
- P furrr           0.3.1      2022-08-15 [?] CRAN (R 4.2.0)
- P future          1.28.0     2022-09-02 [?] CRAN (R 4.2.0)
- P future.apply    1.10.0     2022-11-05 [?] CRAN (R 4.2.1)
- P gargle          1.2.1      2022-09-08 [?] CRAN (R 4.2.0)
- P generics        0.1.3      2022-07-05 [?] CRAN (R 4.2.0)
- P ggfortify     * 0.4.14     2022-01-03 [?] CRAN (R 4.2.0)
- P ggplot2       * 3.3.6      2022-05-03 [?] CRAN (R 4.2.0)
- P ggridges      * 0.5.4      2022-09-26 [?] CRAN (R 4.2.0)
- P globals         0.16.1     2022-08-28 [?] CRAN (R 4.2.0)
- P glue            1.6.2      2022-02-24 [?] CRAN (R 4.2.0)
- P googledrive     2.0.0      2021-07-08 [?] CRAN (R 4.2.0)
- P googlesheets4   1.0.1      2022-08-13 [?] CRAN (R 4.2.0)
- P gower           1.0.0      2022-02-03 [?] CRAN (R 4.2.0)
- P GPfit           1.0-8      2019-02-08 [?] CRAN (R 4.2.0)
- P gridExtra       2.3        2017-09-09 [?] CRAN (R 4.2.0)
- P gtable          0.3.1      2022-09-01 [?] CRAN (R 4.2.0)
- P gtools          3.9.3      2022-07-11 [?] CRAN (R 4.2.0)
- P hardhat         1.2.0      2022-06-30 [?] CRAN (R 4.2.0)
- P haven           2.5.1      2022-08-22 [?] CRAN (R 4.2.0)
- P hms             1.1.2      2022-08-19 [?] CRAN (R 4.2.0)
- P htmltools       0.5.3      2022-07-18 [?] CRAN (R 4.2.0)
- P htmlwidgets     1.5.4      2021-09-08 [?] CRAN (R 4.2.0)
- P httpuv          1.6.6      2022-09-08 [?] CRAN (R 4.2.0)
- P httr            1.4.4      2022-08-17 [?] CRAN (R 4.2.0)
- P igraph          1.3.5      2022-09-22 [?] CRAN (R 4.2.0)
- P infer         * 1.0.3      2022-08-22 [?] CRAN (R 4.2.0)
- P inline          0.3.19     2021-05-31 [?] CRAN (R 4.2.0)
- P ipred           0.9-13     2022-06-02 [?] CRAN (R 4.2.0)
- P iterators       1.0.14     2022-02-05 [?] CRAN (R 4.2.0)
- P jsonlite        1.8.2      2022-10-02 [?] CRAN (R 4.2.0)
- P knitr           1.40       2022-08-24 [?] CRAN (R 4.2.0)
- P labeling        0.4.2      2020-10-20 [?] CRAN (R 4.2.0)
- P later           1.3.0      2021-08-18 [?] CRAN (R 4.2.0)
- P lattice         0.20-45    2021-09-22 [?] CRAN (R 4.2.1)
- P lava            1.7.0      2022-10-25 [?] CRAN (R 4.2.0)
- P lhs             1.1.5      2022-03-22 [?] CRAN (R 4.2.0)
- P lifecycle       1.0.3      2022-10-07 [?] CRAN (R 4.2.1)
- P listenv         0.8.0      2019-12-05 [?] CRAN (R 4.2.0)
- P lme4            1.1-31     2022-11-01 [?] CRAN (R 4.2.0)
- P loo             2.5.1      2022-03-24 [?] CRAN (R 4.2.0)
- P lubridate       1.8.0      2021-10-07 [?] CRAN (R 4.2.0)
- P magrittr        2.0.3      2022-03-30 [?] CRAN (R 4.2.0)
- P markdown        1.1        2019-08-07 [?] CRAN (R 4.2.0)
- P MASS            7.3-58.1   2022-08-03 [?] CRAN (R 4.2.0)
- P Matrix          1.5-1      2022-09-13 [?] CRAN (R 4.2.0)
- P matrixStats     0.62.0     2022-04-19 [?] CRAN (R 4.2.0)
- P memoise         2.0.1      2021-11-26 [?] CRAN (R 4.2.0)
- P mgcv            1.8-41     2022-10-21 [?] CRAN (R 4.2.0)
- P mime            0.12       2021-09-28 [?] CRAN (R 4.2.0)
- P miniUI          0.1.1.1    2018-05-18 [?] CRAN (R 4.2.0)
- P minqa           1.2.5      2022-10-19 [?] CRAN (R 4.2.0)
- P modeldata     * 1.0.1      2022-09-06 [?] CRAN (R 4.2.0)
- P modelr          0.1.9      2022-08-19 [?] CRAN (R 4.2.0)
- P munsell         0.5.0      2018-06-12 [?] CRAN (R 4.2.0)
- P nlme            3.1-160    2022-10-10 [?] CRAN (R 4.2.1)
- P nloptr          2.0.3      2022-05-26 [?] CRAN (R 4.2.0)
- P nnet            7.3-18     2022-09-28 [?] CRAN (R 4.2.0)
- P parallelly      1.32.1     2022-07-21 [?] CRAN (R 4.2.0)
- P parsnip       * 1.0.2      2022-10-01 [?] CRAN (R 4.2.0)
- P pillar          1.8.1      2022-08-19 [?] CRAN (R 4.2.0)
- P pkgbuild        1.3.1      2021-12-20 [?] CRAN (R 4.2.0)
- P pkgconfig       2.0.3      2019-09-22 [?] CRAN (R 4.2.0)
- P plyr            1.8.7      2022-03-24 [?] CRAN (R 4.2.0)
- P prettyunits     1.1.1      2020-01-24 [?] CRAN (R 4.2.0)
- P processx        3.7.0      2022-07-07 [?] CRAN (R 4.2.0)
- P prodlim         2019.11.13 2019-11-17 [?] CRAN (R 4.2.0)
- P promises        1.2.0.1    2021-02-11 [?] CRAN (R 4.2.0)
- P ps              1.7.1      2022-06-18 [?] CRAN (R 4.2.0)
- P purrr         * 0.3.5      2022-10-06 [?] CRAN (R 4.2.1)
- P R6              2.5.1      2021-08-19 [?] CRAN (R 4.2.0)
- P Rcpp          * 1.0.9      2022-07-08 [?] CRAN (R 4.2.0)
- P RcppParallel    5.1.5      2022-01-05 [?] CRAN (R 4.2.0)
- P readr         * 2.1.3      2022-10-01 [?] CRAN (R 4.2.0)
- P readxl          1.4.1      2022-08-17 [?] CRAN (R 4.2.0)
- P recipes       * 1.0.2      2022-10-16 [?] CRAN (R 4.2.0)
-   renv            0.16.0     2022-09-29 [1] CRAN (R 4.2.0)
- P reprex          2.0.2      2022-08-17 [?] CRAN (R 4.2.0)
- P reshape2        1.4.4      2020-04-09 [?] CRAN (R 4.2.0)
- P rlang           1.0.6      2022-09-24 [?] CRAN (R 4.2.0)
- P rmarkdown       2.16       2022-08-24 [?] CRAN (R 4.2.0)
- P rpart           4.1.19     2022-10-21 [?] CRAN (R 4.2.0)
- P rsample       * 1.1.0      2022-08-08 [?] CRAN (R 4.2.0)
- P rstan           2.21.7     2022-09-08 [?] CRAN (R 4.2.0)
- P rstanarm      * 2.21.3     2022-04-09 [?] CRAN (R 4.2.0)
- P rstantools      2.2.0      2022-04-08 [?] CRAN (R 4.2.0)
- P rstudioapi      0.14       2022-08-22 [?] CRAN (R 4.2.0)
- P rvest           1.0.3      2022-08-19 [?] CRAN (R 4.2.0)
- P scales        * 1.2.1      2022-08-20 [?] CRAN (R 4.2.0)
- P sessioninfo     1.2.2      2021-12-06 [?] CRAN (R 4.2.0)
- P shiny           1.7.3      2022-10-25 [?] CRAN (R 4.2.0)
- P shinyjs         2.1.0      2021-12-23 [?] CRAN (R 4.2.0)
- P shinystan       2.6.0      2022-03-03 [?] CRAN (R 4.2.0)
- P shinythemes     1.2.0      2021-01-25 [?] CRAN (R 4.2.0)
- P StanHeaders     2.21.0-7   2020-12-17 [?] CRAN (R 4.2.0)
- P stringi         1.7.8      2022-07-11 [?] CRAN (R 4.2.0)
- P stringr       * 1.4.1      2022-08-20 [?] CRAN (R 4.2.0)
- P survival        3.4-0      2022-08-09 [?] CRAN (R 4.2.0)
- P threejs         0.3.3      2020-01-21 [?] CRAN (R 4.2.0)
- P tibble        * 3.1.8      2022-07-22 [?] CRAN (R 4.2.0)
- P tidymodels    * 1.0.0      2022-07-13 [?] CRAN (R 4.2.0)
- P tidyr         * 1.2.1      2022-09-08 [?] CRAN (R 4.2.0)
- P tidyselect      1.2.0      2022-10-10 [?] CRAN (R 4.2.0)
- P tidyverse     * 1.3.2      2022-07-18 [?] CRAN (R 4.2.0)
- P timeDate        4021.106   2022-09-30 [?] CRAN (R 4.2.0)
- P tune          * 1.0.1      2022-10-09 [?] CRAN (R 4.2.0)
- P tzdb            0.3.0      2022-03-28 [?] CRAN (R 4.2.0)
- P utf8            1.2.2      2021-07-24 [?] CRAN (R 4.2.0)
- P vctrs           0.4.2      2022-09-29 [?] CRAN (R 4.2.0)
- P vroom           1.6.0      2022-09-30 [?] CRAN (R 4.2.0)
- P withr           2.5.0      2022-03-03 [?] CRAN (R 4.2.0)
- P workflows     * 1.1.0      2022-09-26 [?] CRAN (R 4.2.0)
- P workflowsets  * 1.0.0      2022-07-12 [?] CRAN (R 4.2.0)
- P xfun            0.33       2022-09-12 [?] CRAN (R 4.2.0)
- P xml2            1.3.3      2021-11-30 [?] CRAN (R 4.2.0)
- P xtable          1.8-4      2019-04-21 [?] CRAN (R 4.2.0)
- P xts             0.12.2     2022-10-16 [?] CRAN (R 4.2.0)
- P yaml            2.3.5      2022-02-21 [?] CRAN (R 4.2.0)
- P yardstick     * 1.1.0      2022-09-07 [?] CRAN (R 4.2.0)
- P zoo             1.8-11     2022-09-17 [?] CRAN (R 4.2.0)
-
- [1] /Users/rod/Dropbox/Statisticat/renv/library/R-4.2/x86_64-apple-darwin17.0
- [2] /Users/rod/Dropbox/Statisticat/renv/sandbox/R-4.2/x86_64-apple-darwin17.0/84ba8b13
-
- P ── Loaded and on-disk path mismatch.
-
-──────────────────────────────────────────────────────────────────────────────</code></pre>
-</div>
-</div>
-
-
 </section>
 
  ]]></description>

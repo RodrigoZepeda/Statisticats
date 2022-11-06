@@ -1000,9 +1000,5 @@ modelo_bayesiano %>%
 
 1.  Utilice las opciones de `engine` para cambiar el `prior_intercept` del intercepto a una `t` de Student y el `prior` de los coeficientes a una `Laplace`. ¿Cambia mucho el resultado?
 
-# Sistema
 
-```{r}
-sessioninfo::session_info()
-```
 
