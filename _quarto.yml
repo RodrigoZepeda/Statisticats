@@ -1,0 +1,24 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Statisticats 🐱"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/RodrigoZepeda/Statisticats
+      - icon: twitter
+        href: https://twitter.com/RodZepeda
+      - icon: rss
+        href: index.xml
+format:
+  html:
+    theme:
+      - yeti
+      - custom.scss
+      
+fig-cap-location: margin
+editor: source
+

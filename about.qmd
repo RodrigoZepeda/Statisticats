@@ -1,0 +1,22 @@
+---
+title: "About | Acerca de"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com/RodZepeda
+    - icon: github
+      text: Github
+      href: https://github.com/RodrigoZepeda/
+---
+
+## English:
+
+Applied mathematician. I spend my time modelling (but with math). Some years ago I became a statistician by mistake: haven't been able to leave the club since. 
+
+## Español:
+
+Matemático aplicado. Me la vivo modelando (pero con matemáticas). Hace algunos años me convertí en un estadístico por error: no he podido salir de este club desde entonces. 
+

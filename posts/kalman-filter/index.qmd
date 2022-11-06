@@ -1,0 +1,22 @@
+---
+title: "The Kalman Filter"
+date: "2022-10-08"
+categories: [state space models, Kalman filter, smoothing, statistics, linear models, gaussian, bayesian statistics, bayes]
+image: "filter.jpg"
+draft: true
+format:
+  html:
+    code-fold: true
+---
+
+![Dmitry Makeev, CC BY-SA 4.0 <https://creativecommons.org/licenses/by-sa/4.0>, via Wikimedia Commons](filter.jpg){fig-alt="Fotografía de un filtro polarizado para cámara fotográfica tipo reflex y el estuche del filtro en color blanco." fig-align="center"}
+
+Hola
+
+$$
+x^2
+$$
+
+```{r}
+2+2
+```

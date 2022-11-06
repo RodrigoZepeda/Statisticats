@@ -1,0 +1,18 @@
+/*-- scss:defaults --*/
+$primary: #1b7385 !default;
+$secondary:  #6d70c4 !default;
+$info: #1b7385 !default;
+$warning: #d64da4 !default;
+$danger: #ff4747 !default;
+$success: #6d70c4 !default;
+$light: #1b7385 !default;
+$dark: #083e49 !default;
+
+$callout-color-note: $info;
+$callout-color-tip: $secondary;
+$callout-color-caution: $success;
+$callout-color-warning: $warning;
+$callout-color-important: $danger;
+
+$headings-color: $primary;
+$code-block-bg: #f2f7f7;
