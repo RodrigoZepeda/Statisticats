@@ -273,6 +273,3 @@ A continuación derivamos las distribuciones de cada uno de estos escenarios a p
 
 
 
-::: callout-note
-El objetivo de este documento es generar mecanismos de inferencia bayesiana a fin de aproximar dicho sistema infiriendo tanto $f$ como $h$ (o aproximaciones lineales $F$ y $H$) a partir de una colección finita datos observados $\{y_t\}_{t\geq 0}$.
-:::

@@ -4,6 +4,7 @@ project:
 
 website:
   title: "Statisticats 🐱"
+  site-url: https://rodrigozepeda.github.io/Statisticats/
   navbar:
     right:
       - about.qmd
