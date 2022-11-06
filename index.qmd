@@ -10,3 +10,43 @@ listing:
 page-layout: full
 title-block-banner: false
 ---
+
+# Hola, soy Rodrigo Zepeda-Tello.
+
+::: {.grid}
+
+
+::: {.g-col-6}
+I'm a mathematician turned statistician. I've been modeling (with math... _ehem_) epidemics for the last 10 years. I have worked with differential equations (stochastic, ordinary, etc), abstract networks, bayesian statistics ~(and frequentist)~, random forests, neural networks, time series and survey designs. I also lecture a course in Applied Statistics and give short courses in R. In this blog I post stuff I find interesting (and course notes) oftentimes in English and sometimes in Spanish. 
+
+Feel free to contact me on [Twitter](https://twitter.com/home), [Github](https://github.com/RodrigoZepeda/), and [ResearchGate](https://www.researchgate.net/profile/Rodrigo-Zepeda-Tello-2). 
+
+If you like my work consider:
+
+  - [hiring me to consult for your project](mailto:rodrigo.zepeda.tello@gmail.com),
+  - [commissioning a course](mailto:rodrigo.zepeda.tello@gmail.com),
+  - [buying me a coffee](https://www.buymeacoffee.com/RodZepeda) or [a book](https://www.amazon.com.mx/hz/wishlist/ls/1DVVIPRRM2LEK?ref_=wl_share),
+  - [subscribing to get the latest posts directly in your email](https://tinyletter.com/RodZepeda).
+
+:::
+
+::: {.g-col-6}
+Soy un matemático que se volvió estadístico. He estado modelando (con matemáticas... _ehem_) epidemias desde hace 10 años. He trabajado con ecuaciones diferenciales (estocásticas, ordinarias, etc), redes abstractas, estadística bayesiana ~(y frecuentista)~, bosques aleatorios, redes neuronales, series de tiempo y diseños de encuestas. También doy clases de estadística aplicada y cursos cortos de R. En este blog escribo cosas que me parecen interesantes (sí como notas de cursos) a veces en inglés y a veces en español.
+
+
+Contáctame en [Twitter](https://twitter.com/home), [Github](https://github.com/RodrigoZepeda/) y [ResearchGate](https://www.researchgate.net/profile/Rodrigo-Zepeda-Tello-2). 
+
+Si te gusta mi trabajo considera:
+
+  - [contratarme como consultor de tu proyecto](mailto:rodrigo.zepeda.tello@gmail.com),
+  - [comisionar un curso](mailto:rodrigo.zepeda.tello@gmail.com),
+  - [comprarme un cafecito](https://www.buymeacoffee.com/RodZepeda) o [un libro](https://www.amazon.com.mx/hz/wishlist/ls/1DVVIPRRM2LEK?ref_=wl_share),
+  - [suscribirte para tener las entradas más recientes directamente en tu correo](https://tinyletter.com/RodZepeda)
+
+:::
+
+:::
+
+## Posts
+
+

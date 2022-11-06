@@ -1,6 +1,7 @@
 ---
 title: "Modelos de Espacios de Estados"
 date: "2022-10-08"
+draft: true
 categories: [modelos de espacios de estados / state space models, estadística / statistics, series de tiempo / time series, bayes, español / Spanish]
 image: "sloyd_system.jpg"
 lang: es

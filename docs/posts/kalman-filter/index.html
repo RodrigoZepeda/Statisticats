@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.1.189">
+<meta name="generator" content="quarto-1.1.251">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Rodrigo Zepeda-Tello">
 <meta name="dcterms.date" content="2022-10-08">
 
-<title>Stats ft RodZepeda - The Kalman Filter</title>
+<title>Statisticats 🐱 - The Kalman Filter</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -126,7 +126,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -137,7 +136,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">Stats ft RodZepeda</span>
+    <span class="navbar-title">Statisticats 🐱</span>
     </a>
   </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -149,12 +148,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="nav-link" href="../../about.html">About | Acerca de</a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/RodrigoZepeda/"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/RodrigoZepeda/Statisticats"><i class="bi bi-github" role="img">
 </i> 
  </a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://twitter.com/RodZepeda"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img">
 </i> 
  </a>
   </li>  
@@ -168,7 +172,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
+<p>subscribe.html</p>
+</div></div>
         
     </div>
 <!-- main -->
@@ -229,6 +235,30 @@ x^2
 
 
 </main> <!-- /main -->
+<div>
+<hr>
+
+<h3> Stay in touch / Mantente en contacto </h3>
+<p> If you liked this post, subscribe to avoid missing future ones.</p>
+<p> Si te gustó esta entrada, suscríbete para no perderte ninguna.</p>
+<div class="form-group">
+  <form style="padding:3px;text-align:center;" action="https://tinyletter.com/RodZepeda" method="post" target="popupwindow" onsubmit="window.open('https://tinyletter.com/RodZepeda', 'popupwindow', 'scrollbars=yes,width=800,height=600');return true">
+    <fieldset>
+    <div class="form-group">
+    <label for="tlemail">Subscribe:</label>
+    <input type="text" class="form-control form-control-sm" name="email" id="tlemail" placeholder="name@email.com">
+    <input type="hidden" value="1" name="embed">
+    </div>
+    <div class="form-group">
+    <button type="submit" class="btn btn-primary btn-sm mt-2">Suscribe</button>
+    </div>
+    </fieldset>
+  </form>
+</div>
+
+
+<hr>
+</div>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -326,6 +356,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
   }
 });
+</script>
+<script src="https://utteranc.es/client.js" repo="RodrigoZepeda/StatisticatsComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
 

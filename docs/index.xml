@@ -10,207 +10,793 @@
 <atom:link href="https://rodrigozepeda.github.io/Statisticats/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.1.251</generator>
-<lastBuildDate>Sat, 08 Oct 2022 05:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 06 Nov 2022 06:00:00 GMT</lastBuildDate>
 <item>
-  <title>Modelos de Espacios de Estados</title>
+  <title>Regresiones (parte 1)</title>
   <dc:creator>Rodrigo Zepeda-Tello</dc:creator>
-  <link>https://rodrigozepeda.github.io/Statisticats/posts/state-space-models-1/index.html</link>
+  <link>https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index.html</link>
   <description><![CDATA[ 
 
 
 
-<div class="cell">
-
-</div>
+<div class="cell page-columns page-full">
+<div class="cell-output-display page-columns page-full">
 <div class="quarto-figure quarto-figure-center page-columns page-full">
 <figure class="figure page-columns page-full">
-<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/state-space-models-1/sloyd_system.jpg" class="img-fluid figure-img" alt="Diagrama de 1892 que muestra diferentes formas de realizar cortes a madera."></p>
-<p></p><figcaption class="figure-caption margin-caption">Fuente: <em>Internet Archive Book Images, No restrictions, via Wikimedia Commons</em></figcaption><p></p>
-</figure>
-</div>
-<blockquote class="blockquote">
-<p>Última actualización 2022-11-06</p>
-</blockquote>
-<section id="introducción" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
-<p>Un <strong>modelo de espacios de estados</strong> es un sistema que evoluciona con el tiempo compuesto por dos variables:</p>
-<ul>
-<li><p>Una variable <strong>observada</strong> <img src="https://latex.codecogs.com/png.latex?y_t"> que representa las mediciones realizadas al sistema al tiempo <img src="https://latex.codecogs.com/png.latex?t">.</p></li>
-<li><p>Una variable <strong>latente</strong> (o escondida) <img src="https://latex.codecogs.com/png.latex?x_t"> que es la que en realidad lleva la dinámica.</p></li>
-</ul>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Nota
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>A lo largo de estas notas consideraremos que el subíndice <img src="https://latex.codecogs.com/png.latex?t"> es un número entero mayor o igual a cero (<em>i.e.</em> discreto).</p>
-</div>
-</div>
-<p>Si, por ejemplo, desde tierra observamos un avión navegar entre las nubes <img src="https://latex.codecogs.com/png.latex?y_t"> sería la posición del avión al tiempo <img src="https://latex.codecogs.com/png.latex?t"> (desde nuestra perspectiva) y <img src="https://latex.codecogs.com/png.latex?x_t"> sería la instrucción arrojada por el piloto que vuela el avión (al tiempo <img src="https://latex.codecogs.com/png.latex?t">). Al piloto <img src="https://latex.codecogs.com/png.latex?x_t"> no lo vemos (<strong>latente</strong>) pero es quien en realidad controla la posición <strong>observada</strong> de la aeronave <img src="https://latex.codecogs.com/png.latex?y_t">.</p>
-<p>Una forma común de representar los modelos de espacios de estados es mediante gráficas acíclicas dirigidas (como en la Figura&nbsp;1) donde podemos observar que en cada momento <img src="https://latex.codecogs.com/png.latex?t"> la <img src="https://latex.codecogs.com/png.latex?x_t"> depende sólo de su posición anterior (<img src="https://latex.codecogs.com/png.latex?x_%7Bt-1%7D">). Éstas variables llevan la dinámica pues son las que evolucionan con el tiempo. Por otro lado, las variables observadas, <img src="https://latex.codecogs.com/png.latex?y_t">, se originan por cada <img src="https://latex.codecogs.com/png.latex?x_t"> y por tanto en el diagrama éstas son completamente explicadas por su <img src="https://latex.codecogs.com/png.latex?x_t"> correspondiente.</p>
-<div class="cell page-columns page-full" data-layout-align="center">
-<div class="cell-output-display page-columns page-full">
-<div id="fig-dag-space-state" class="quarto-figure quarto-figure-center anchored page-columns page-full">
-<figure class="figure page-columns page-full">
-<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/state-space-models-1/index_files/figure-html/fig-dag-space-state-1.png" class="img-fluid figure-img" alt="Diagrama de un modelo de espacios de estados. Comienza con un nodo x0 del lado izquierdo que se asocia con x1 mediante una flecha dirigida hacia éste. De x1 brotan dos flechas una hacia y1 en la parte inferior y una hacia x2 a su derecha. El proceso continúa hasta llegar a x subíndice t menos 1, x subíndice t y x subíndice t más 1 los cuales se conectan mediante flechas de izquierda a derecha partiendo de x subíndice t menos 1 rumbo a x subíndice t y de éste rumbo a x subíndice t más 1. Las y subíndice t (respectivamente subíndices t menos 1 y t más 1) están debajo de las x y se conectan con éstas mediante flechas que surgen de la respectiva x rumbo a la y correspondiente." width="768"></p>
-<p></p><figcaption class="figure-caption margin-caption">Figura&nbsp;1: Representación diagramática de un modelo de espacio de estados. Las <img src="https://latex.codecogs.com/png.latex?x_t"> son las variables que llevan la dinámica y éstas generan los observables <img src="https://latex.codecogs.com/png.latex?y_t">. Nota que las <img src="https://latex.codecogs.com/png.latex?x_t"> sólo dependen de la observación anterior.</figcaption><p></p>
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/quetelet.jpg" class="img-fluid figure-img" style="width:30.0%" alt="Litografía de Aldophe Quetelet."></p>
+<p></p><figcaption class="figure-caption margin-caption">Adolphe Quetelet fue quien popularizó el uso del método de mínimos cuadrados en las ciencias sociales. Fuente: <em>Miscellaneous Items in High Demand, PPOC, Library of Congress, Public domain, via Wikimedia Commons</em>.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Un ejemplo específico de un modelo de espacios de estados (el <strong>modelo local lineal</strong>) ocurre cuando consideramos que las variables latentes <img src="https://latex.codecogs.com/png.latex?x_t"> se generan a partir de la anterior (<img src="https://latex.codecogs.com/png.latex?x_%7Bt-1%7D">) más un error aleatorio (<em>i.e.</em> forman una caminata aleatoria):</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0Ax_%7Bt%7D%20=%20x_%7Bt-1%7D%20+%20%5Ceta_t%20%5Ctext%7B%20con%20%7D%20%5Ceta_t%20%5Csim%20%5Ctext%7BNormal%7D(0,%5Csigma_%7B%5Ceta%7D%5E2)%0A"></p>
-<p>mientras que las <img src="https://latex.codecogs.com/png.latex?y_t"> están dadas por la <img src="https://latex.codecogs.com/png.latex?x_t"> más un segundo error aleatorio de medición con una distribución igualmente normal:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0Ay_t%20=%20x_t%20+%20%5Cepsilon_t%20%5Ctext%7B%20con%20%7D%20%5Cepsilon_t%20%5Csim%20%5Ctext%7BNormal%7D(0,%5Csigma_%7B%5Cepsilon%7D%5E2)%0A"></p>
-<p>El sistema completo está dado por:</p>
-<p><span id="eq-local-linear-1"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0Ax_t%20&amp;%20=%20x_%7Bt-1%7D%20+%20%5Ceta_t%20%5C%5C%0Ay_t%20&amp;%20=%20x_t%20+%20%5Cepsilon_t%0A%5Cend%7Balign%7D%0A%5Ctag%7B1%7D"></span></p>
-<p>con <img src="https://latex.codecogs.com/png.latex?%5Ceta_t%20%5Csim%20%5Ctext%7BNormal%7D(0,%5Csigma_%7B%5Ceta%7D%5E2)"> y <img src="https://latex.codecogs.com/png.latex?%5Cepsilon_t%20%5Csim%20%5Ctext%7BNormal%7D(0,%5Csigma_%7B%5Cepsilon%7D%5E2)">.</p>
-<p>Una simulación de este proceso está dado por la Figura&nbsp;2:</p>
-<div class="cell page-columns page-full" data-layout-align="center">
+<section id="paquetes-y-datos-a-utilizar-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="paquetes-y-datos-a-utilizar-en-r">Paquetes y datos a utilizar en R</h2>
+<p>A lo largo de esta sección usaremos los siguientes paquetes:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(tidymodels)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(ggfortify)  <span class="co" style="color: #5E5E5E;">#autoplot para diagnósticos</span></span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(rstanarm)   <span class="co" style="color: #5E5E5E;">#para regresión bayesiana</span></span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="co" style="color: #5E5E5E;">#Siempre que uses tidymodels</span></span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;">tidymodels_prefer</span>()</span></code></pre></div>
+</div>
+<p>En general usaremos la filosofía <code>tidymodels</code> para combinar los resultados con el <code>tidyverse</code>. Si quieres saber más de <code>tidymodels</code> te recomiendo checar <a href="https://www.tmwr.org">su libro</a> o <a href="https://www.tidymodels.org/learn/">su página web</a>.</p>
+<section id="embarazo-adolescente-y-pobreza" class="level3">
+<h3 class="anchored" data-anchor-id="embarazo-adolescente-y-pobreza">Embarazo adolescente y pobreza</h3>
+<p>Para los datos usaremos la información de <a href="https://online.stat.psu.edu/stat462/sites/onlinecourses.science.psu.edu.stat462/files/data/poverty/index.txt"><em>Utts y Heckard</em></a> para determinar si hay una relación entre embarazo adolescente y pobreza.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;">#Lectura desde sitio web</span></span>
+<span id="cb2-2">url <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="st" style="color: #20794D;">"https://online.stat.psu.edu/stat462/sites/onlinecourses.science.psu.edu.stat462/files/data/poverty/index.txt"</span></span>
+<span id="cb2-3">emb_pob <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_delim</span>(url)</span></code></pre></div>
+</div>
+<p>Las variables <code>Brth15to17</code> y <code>Brth18to19</code> son las tasas brutas de natalidad por cada 1000 mujeres (en el año 2002) en adolescentes de 15 a 17 años y de 18 a 19 respectivamente. La variable <code>PovPct</code> representa la proporción (%) de la población que vive bajo la línea de pobreza en cada una de las entidades de EEUU (<code>Location</code>). Las variables <code>ViolCrime</code> y <code>TeenBrth</code> no se explican por lo que no las usaremos.</p>
+</section>
+</section>
+<section id="regresiones-lineales" class="level1">
+<h1>Regresiones lineales</h1>
+<p>Usaremos <code>Brth15to17</code> y <code>PovPct</code> para estudiar si hay una relación entre la tasa de natalidad en adolescentes y el porcentaje de la población en pobreza. Para ello comenzaremos con graficar:</p>
+<div class="cell">
 <details>
 <summary>Código</summary>
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">475</span>)</span>
-<span id="cb1-2">ntimes <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">100</span>    <span class="co" style="color: #5E5E5E;">#Número de simulaciones desde x0 hasta x_ntimes</span></span>
-<span id="cb1-3"></span>
-<span id="cb1-4">xinit  <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">0</span>      <span class="co" style="color: #5E5E5E;">#Valor inicial de x</span></span>
-<span id="cb1-5">sigma_eta <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">1</span>   <span class="co" style="color: #5E5E5E;">#Varianza de eta</span></span>
-<span id="cb1-6">sigma_eps <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fl" style="color: #AD0000;">2.1</span> <span class="co" style="color: #5E5E5E;">#Varianza de epsilon</span></span>
-<span id="cb1-7"></span>
-<span id="cb1-8">xt     <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="cn" style="color: #8f5902;">NA</span>, ntimes <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">1</span>); xt[<span class="dv" style="color: #AD0000;">1</span>] <span class="ot" style="color: #003B4F;">&lt;-</span> xinit</span>
-<span id="cb1-9">etat   <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="cn" style="color: #8f5902;">NA</span>, ntimes)</span>
-<span id="cb1-10">yt     <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="cn" style="color: #8f5902;">NA</span>, ntimes)</span>
-<span id="cb1-11">epst   <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="cn" style="color: #8f5902;">NA</span>, ntimes)</span>
-<span id="cb1-12"></span>
-<span id="cb1-13"><span class="cf" style="color: #003B4F;">for</span> (tval <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>ntimes){</span>
-<span id="cb1-14">  etat[tval]     <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rnorm</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">mean =</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">sd =</span> sigma_eta)</span>
-<span id="cb1-15">  xt[tval <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">1</span>]   <span class="ot" style="color: #003B4F;">&lt;-</span> xt[tval] <span class="sc" style="color: #5E5E5E;">+</span> etat[tval]</span>
-<span id="cb1-16">  epst[tval]     <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rnorm</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">mean =</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">sd =</span> sigma_eps)</span>
-<span id="cb1-17">  yt[tval]       <span class="ot" style="color: #003B4F;">&lt;-</span> xt[tval <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">1</span>] <span class="sc" style="color: #5E5E5E;">+</span> epst[tval]</span>
-<span id="cb1-18">}</span>
-<span id="cb1-19"></span>
-<span id="cb1-20">mynames <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">xt</span><span class="st" style="color: #20794D;">`</span>   <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">TeX</span>(<span class="st" style="color: #20794D;">"$x_t$"</span>),</span>
-<span id="cb1-21">             <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">etat</span><span class="st" style="color: #20794D;">`</span> <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">TeX</span>(<span class="st" style="color: #20794D;">"$</span><span class="sc" style="color: #5E5E5E;">\\</span><span class="st" style="color: #20794D;">eta_t$"</span>),</span>
-<span id="cb1-22">             <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">yt</span><span class="st" style="color: #20794D;">`</span>   <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">TeX</span>(<span class="st" style="color: #20794D;">"$y_t$"</span>),</span>
-<span id="cb1-23">             <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">epst</span><span class="st" style="color: #20794D;">`</span> <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">TeX</span>(<span class="st" style="color: #20794D;">"$</span><span class="sc" style="color: #5E5E5E;">\\</span><span class="st" style="color: #20794D;">epsilon_t$"</span>))</span>
-<span id="cb1-24">  </span>
-<span id="cb1-25"><span class="co" style="color: #5E5E5E;">#Realineación de x</span></span>
-<span id="cb1-26"><span class="fu" style="color: #4758AB;">tibble</span>(</span>
-<span id="cb1-27">  <span class="at" style="color: #657422;">time =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>ntimes,</span>
-<span id="cb1-28">  <span class="at" style="color: #657422;">xt   =</span> xt[<span class="dv" style="color: #AD0000;">2</span><span class="sc" style="color: #5E5E5E;">:</span>(ntimes <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">1</span>)],</span>
-<span id="cb1-29">  <span class="at" style="color: #657422;">yt   =</span> yt, </span>
-<span id="cb1-30">  <span class="at" style="color: #657422;">epst =</span> epst,</span>
-<span id="cb1-31">  <span class="at" style="color: #657422;">etat =</span> etat,</span>
-<span id="cb1-32">) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
-<span id="cb1-33">  <span class="fu" style="color: #4758AB;">pivot_longer</span>(<span class="at" style="color: #657422;">cols =</span> xt<span class="sc" style="color: #5E5E5E;">:</span>etat) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
-<span id="cb1-34">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">name =</span> <span class="fu" style="color: #4758AB;">factor</span>(name, <span class="at" style="color: #657422;">levels =</span> <span class="fu" style="color: #4758AB;">names</span>(mynames), </span>
-<span id="cb1-35">                       <span class="at" style="color: #657422;">labels =</span> mynames, <span class="at" style="color: #657422;">ordered =</span> T)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
-<span id="cb1-36">  <span class="fu" style="color: #4758AB;">ggplot</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb1-37">  <span class="fu" style="color: #4758AB;">geom_line</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> time, <span class="at" style="color: #657422;">y =</span> value, <span class="at" style="color: #657422;">color =</span> name)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb1-38">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> time, <span class="at" style="color: #657422;">y =</span> value, <span class="at" style="color: #657422;">color =</span> name), <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">1</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb1-39">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> time, <span class="at" style="color: #657422;">y =</span> value), <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"white"</span>, <span class="at" style="color: #657422;">size =</span> <span class="fl" style="color: #AD0000;">0.25</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb1-40">  <span class="fu" style="color: #4758AB;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;">~</span>name, <span class="at" style="color: #657422;">labeller =</span> label_parsed) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb1-41">  <span class="fu" style="color: #4758AB;">theme_minimal</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb1-42">  <span class="fu" style="color: #4758AB;">theme</span>(</span>
-<span id="cb1-43">    <span class="at" style="color: #657422;">legend.position =</span> <span class="st" style="color: #20794D;">"none"</span>,</span>
-<span id="cb1-44">    <span class="at" style="color: #657422;">axis.text.y     =</span> <span class="fu" style="color: #4758AB;">element_blank</span>(),</span>
-<span id="cb1-45">    <span class="at" style="color: #657422;">axis.ticks.y    =</span> <span class="fu" style="color: #4758AB;">element_blank</span>(),</span>
-<span id="cb1-46">    <span class="at" style="color: #657422;">plot.title      =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">16</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#0077a1"</span>, </span>
-<span id="cb1-47">                                   <span class="at" style="color: #657422;">face =</span> <span class="st" style="color: #20794D;">"bold"</span>, <span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>),</span>
-<span id="cb1-48">    <span class="at" style="color: #657422;">plot.subtitle   =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">12</span>, <span class="at" style="color: #657422;">face =</span> <span class="st" style="color: #20794D;">"italic"</span>,</span>
-<span id="cb1-49">                                 <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"gray25"</span>, <span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>)</span>
-<span id="cb1-50">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb1-51">  <span class="fu" style="color: #4758AB;">scale_color_manual</span>(<span class="st" style="color: #20794D;">""</span>, <span class="at" style="color: #657422;">values =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"#1b7385"</span>,<span class="st" style="color: #20794D;">"#3076b8"</span>, <span class="st" style="color: #20794D;">"#a662bd"</span>,<span class="st" style="color: #20794D;">"#f53d7a"</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
-<span id="cb1-52">  <span class="fu" style="color: #4758AB;">labs</span>(</span>
-<span id="cb1-53">    <span class="at" style="color: #657422;">x        =</span> <span class="st" style="color: #20794D;">"</span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;">Tiempo (t)"</span>,</span>
-<span id="cb1-54">    <span class="at" style="color: #657422;">y        =</span> <span class="st" style="color: #20794D;">""</span>,</span>
-<span id="cb1-55">    <span class="at" style="color: #657422;">title    =</span> <span class="st" style="color: #20794D;">"Simulaciones de un modelo a nivel local"</span>,</span>
-<span id="cb1-56">    <span class="at" style="color: #657422;">subtitle =</span> <span class="st" style="color: #20794D;">"Local level model"</span>,</span>
-<span id="cb1-57">    <span class="at" style="color: #657422;">caption  =</span> <span class="st" style="color: #20794D;">"@RodZepeda"</span></span>
-<span id="cb1-58">  ) </span></code></pre></div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;">ggplot</span>(emb_pob) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-2">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> PovPct, <span class="at" style="color: #657422;">y =</span> Brth15to17), <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#bc5090"</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">3</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-3">  <span class="fu" style="color: #4758AB;">labs</span>(</span>
+<span id="cb3-4">    <span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">"Porcentaje en pobreza"</span>,</span>
+<span id="cb3-5">    <span class="at" style="color: #657422;">y =</span> <span class="st" style="color: #20794D;">"Tasa bruta de natalidad (por cada 1,000 mujeres adolescentes)"</span>,</span>
+<span id="cb3-6">    <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Relación entre tasa bruta de natalidad en adolescentes</span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;">de 15 a 19 años y porcentaje en pobreza"</span></span>
+<span id="cb3-7">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-8">  <span class="fu" style="color: #4758AB;">theme_bw</span>()</span></code></pre></div>
 </details>
-<div class="cell-output-display page-columns page-full">
-<div id="fig-simulations-local-linear-space-state" class="quarto-figure quarto-figure-center anchored page-columns page-full">
-<figure class="figure page-columns page-full">
-<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/state-space-models-1/index_files/figure-html/fig-simulations-local-linear-space-state-1.png" class="img-fluid figure-img" alt="Gráfica que muestra una caminata aleatoria para x subíndice t, una caminata aleatoria para y subíndice t y los errores epsilon y eta t simulados mediante normales" width="672"></p>
-<p></p><figcaption class="figure-caption margin-caption">Figura&nbsp;2: Simulación del modelo de espacios de estados lineal dado por <img src="https://latex.codecogs.com/png.latex?x_t%20=%20x_%7Bt-1%7D%20+%20%5Ceta_t"> y <img src="https://latex.codecogs.com/png.latex?y_t%20=%20x_t%20+%20%5Cepsilon_t"></figcaption><p></p>
-</figure>
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>Parece que a mayor porcentaje de pobreza, mayor tasa bruta de natalidad en adolescentes.</p>
+<section id="planteamiento-clásico" class="level2">
+<h2 class="anchored" data-anchor-id="planteamiento-clásico">Planteamiento clásico</h2>
+<p>Si la relación fuera perfecta todos los casos caerían <em>exactamente</em> en una línea recta como sigue:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
-<p>En general, la relación entre las variables observadas y latentes no tiene por qué ser lineal como en la ecuación&nbsp;1 y podemos denotar un modelo de espacios de estados como:</p>
-<p><span id="eq-space-state-model"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0Ax_t%20&amp;%20=%20f(x_%7Bt-1%7D,%20%5Ceta_t),%20%5C%5C%0Ay_t%20&amp;%20=%20h(x_t,%20%5Cepsilon_t),%0A%5Cend%7Balign%7D%0A%5Ctag%7B2%7D"></span></p>
-<p>con <img src="https://latex.codecogs.com/png.latex?%5Ceta_t">, <img src="https://latex.codecogs.com/png.latex?%5Cepsilon_t"> los correspondientes “ruidos” del sistema y de medición (<img src="https://latex.codecogs.com/png.latex?%5C%7B%5Ceta_t%5C%7D_%7Bt%5Cgeq0%7D"> y <img src="https://latex.codecogs.com/png.latex?%5C%7B%5Cepsilon_t%5C%7D_%7Bt%5Cgeq0%7D"> son colecciones de variables aleatorias mutuamente independientes). En general tanto <img src="https://latex.codecogs.com/png.latex?f"> como <img src="https://latex.codecogs.com/png.latex?h"> son desconocidas y no lineales.<sup>1</sup></p>
+</div>
+<p>donde es necesario especificar dos parámetros: el intercepto (el valor que toma cuando la <img src="https://latex.codecogs.com/png.latex?x"> en este caso <code>PovPct</code> vale cero) y la pendiente (el valor que relaciona por cada unidad de aumento en <code>PovPct</code> cuánto aumenta <code>Brth15to17</code>).</p>
+<p>La ecuación de la línea está dada por:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ay%20=%20%5Cbeta_0%20+%20%5Cbeta_1%20x%0A"></p>
+<p>donde <img src="https://latex.codecogs.com/png.latex?%5Cbeta_0"> es el intercepto y <img src="https://latex.codecogs.com/png.latex?%5Cbeta_1"> la pendiente. Usando la terminología de arriba:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BBrth15to17%7D%20=%20%5Ctext%7BIntercepto%7D%20+%20%5Ctext%7BPendiente%7D%5Ctimes%20%5Ctext%7BPovPct%7D%0A"> en particular en ese ejemplo:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BBrth15to17%7D%20=%205%20+%203%5Ccdot%20%5Ctext%7BPovPct%7D%0A"></p>
+<p>La idea es que el intercepto (<img src="https://latex.codecogs.com/png.latex?%5Cbeta_0"> ó <img src="https://latex.codecogs.com/png.latex?5">) te indica dónde comienza tu línea cuando no tienes <img src="https://latex.codecogs.com/png.latex?x">’s (es decir cuando <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BPovPct%7D%20=%200">). El intercepto controla la altura de la línea como puedes ver en la siguiente gráfica donde puse varios interceptos distintos:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>por otro lado la idea de la pendiente (<img src="https://latex.codecogs.com/png.latex?%5Cbeta_1"> ó <img src="https://latex.codecogs.com/png.latex?3">) es retratar cómo cambia la <img src="https://latex.codecogs.com/png.latex?y"> (en este caso <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BBrth15to17%7D">) por cada unidad que cambia la <img src="https://latex.codecogs.com/png.latex?x"> (en este caso <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BPovPct%7D">). El valor de <img src="https://latex.codecogs.com/png.latex?3"> por ejemplo indica que por cada aumento en 1 en <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BPovPct%7D"> la variable <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BBrth15to17%7D"> aumenta en <img src="https://latex.codecogs.com/png.latex?3">. Este cambio es proporcional; es decir si ahora <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BPovPct%7D"> aumenta 4 (por decir algo) <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BBrth15to17%7D"> aumenta <img src="https://latex.codecogs.com/png.latex?3%5Ctimes%204%20=%2012"> unidades. La siguiente gráfica muestra varias líneas todas comenzando en el mismo intercepto de <img src="https://latex.codecogs.com/png.latex?5">:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Como ya vimos en la primer figura el mundo no es tan perfecto que todo sea una línea recta. Hay un poco de aleatoriedad involucrada (sea por variables no medidas, por errores de medición o porque el mundo no sea determinista). Por lo cual se plantea que en lugar de que la <img src="https://latex.codecogs.com/png.latex?y"> sea <em>exactamente</em> <img src="https://latex.codecogs.com/png.latex?%5Cbeta_0%20+%20%5Cbeta_1%20x"> planteamos que la <img src="https://latex.codecogs.com/png.latex?y"> proviene de una variable aleatoria normal donde la media de esa normal <strong>es</strong> <img src="https://latex.codecogs.com/png.latex?%5Cbeta_0%20+%20%5Cbeta_1%20x">; es decir:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ay%20%5Csim%20%5Ctextrm%7BNormal%7D(%20%5Cbeta_0%20+%20%5Cbeta_1%20x,%20%5Csigma%5E2)%0A"></p>
+<p>o dicho de otra manera:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BBrth15to17%7D%20%20%5Csim%20%5Ctextrm%7BNormal%7D(%5Ctext%7BIntercepto%7D%20+%20%5Ctext%7BPendiente%7D%5Ctimes%20%5Ctext%7BPovPct%7D,%20%5Csigma%5E2)%0A"></p>
+<p>donde la <img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2"> es la varianza de dicha normal. Puesto gráficamente lo que esto quiere decir es que si, por ejemplo, el intercepto es <img src="https://latex.codecogs.com/png.latex?5"> y la pendiente <img src="https://latex.codecogs.com/png.latex?3"> entonces cada medición de <img src="https://latex.codecogs.com/png.latex?y"> viene de una normal ligeramente distinta:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BBrth15to17%7D%20%20%5Csim%20%5Ctextrm%7BNormal%7D(5%20+%203%5Ctimes%20%5Ctext%7BPovPct%7D,%20%5Csigma%5E2)%0A"></p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Dicho de otra forma, suponemos que en un mundo perfecto los valores de <img src="https://latex.codecogs.com/png.latex?y"> (<code>Brth15to17</code>) estarían completamente determinados por los de <img src="https://latex.codecogs.com/png.latex?x"> (<code>PovPct</code>) mediante la ecuación de la recta. <strong>Pero</strong> como el mundo no es perfecto entonces la <img src="https://latex.codecogs.com/png.latex?y"> proviene de una normal con promedio dado por la recta. Los puntos (como puedes ver an la siguiente gráfica) se centran más en torno a los promedios de las normales sin embargo están colocados aleatoriamente pues corresponden a distintas realizaciones de <img src="https://latex.codecogs.com/png.latex?y">.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Por ejemplo si el porcentaje de pobreza (<code>PovPct</code>) es <img src="https://latex.codecogs.com/png.latex?10"> entonces la normal de la que provienen estos datos es:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BBrth15to17%7D%20%20%5Csim%20%5Ctextrm%7BNormal%7D(%5Cunderbrace%7B5%20+%203%5Ctimes%2010%7D_%7B35%7D,%20%5Csigma%5E2)%0A"></p>
+<p>mientras que si el porcentaje en pobreza es <img src="https://latex.codecogs.com/png.latex?20"> entonces la normal es:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BBrth15to17%7D%20%20%5Csim%20%5Ctextrm%7BNormal%7D(%5Cunderbrace%7B5%20+%203%5Ctimes%2020%7D_%7B65%7D,%20%5Csigma%5E2)%0A"></p>
+<p>Por supuesto que no hay nada de especial con el modelo normal y alguien podría elegir otra distribución (por ejemplo una Gamma) y establecer que:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BBrth15to17%7D%20%20%5Csim%20%5Ctextrm%7BGamma%7D(%5Ctext%7BIntercepto%7D%20+%20%5Ctext%7BPendiente%7D%5Ctimes%20%5Ctext%7BPovPct%7D,%20%5Cbeta)%0A"></p>
+<p>Estos modelos son algunos de los lineales generalizados y los discutiremos más adelante. Por ahora nos quedaremos con la idea del modelo dado por:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BBrth15to17%7D%20%20%5Csim%20%5Ctextrm%7BNormal%7D(%5Ctext%7BIntercepto%7D%20+%20%5Ctext%7BPendiente%7D%5Ctimes%20%5Ctext%7BPovPct%7D,%20%5Csigma%5E2)%0A"></p>
+<blockquote class="blockquote">
+<p><strong>Nota</strong> quizá conoces la regresión lineal bajo la idea clásica de que <img src="https://latex.codecogs.com/png.latex?%0Ay%20=%20%5Cbeta_0%20+%20%5Cbeta_1%20x%20+%20%5Cepsilon%0A"> donde <img src="https://latex.codecogs.com/png.latex?%5Cepsilon%5Csim%5Ctext%7BNormal%7D(0,%5Csigma%5E2)"> son los errores normales. Esta definición es equivalente a la que damos aquí pues por <a href="https://en.wikipedia.org/wiki/Normal_distribution#Properties">propiedades aditivas de la normal</a> <img src="https://latex.codecogs.com/png.latex?%5Cepsilon%20+%20%5Cbeta_0%20+%20%5Cbeta_1%20x"> se sigue distribuyendo normal pero con la media ahora dada por lo agregado (<img src="https://latex.codecogs.com/png.latex?%5Cbeta_0%20+%20%5Cbeta_1%20x">). Las ventajas de esta notación es que un modelo para regresión Poisson es simplemente: <img src="https://latex.codecogs.com/png.latex?%0Ay%20%5Csim%20%5Ctextrm%7BPoisson%7D%5Cbig(%5Cexp(%5Cbeta_0%20+%20%5Cbeta_1%20x)%5Cbig)%0A"> y un modelo para regresión logística es: <img src="https://latex.codecogs.com/png.latex?%0Ay%20%5Csim%20%5Ctextrm%7BBernoulli%7D%5Cbig(%5Ctextrm%7Blogit%7D(%5Cbeta_0%20+%20%5Cbeta_1%20x)%5Cbig)%0A"></p>
+</blockquote>
 </section>
-<section id="propiedades-probabilísticas" class="level2">
-<h2 class="anchored" data-anchor-id="propiedades-probabilísticas">Propiedades probabilísticas</h2>
-<p>En términos de probabilidad el sistema propone un <strong>sistema markoviano</strong> (nota que <img src="https://latex.codecogs.com/png.latex?x_t"> sólo depende de <img src="https://latex.codecogs.com/png.latex?x_%7Bt-1%7D">) que puede escribirse como sigue:</p>
-<p><span id="eq-space-state-model-proba"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Balign%7D%0Ax_t%20&amp;%20%5Csim%20p(x_%7Bt%7D%7Cx_%7Bt-1%7D),%20%5C%5C%0Ay_t%20&amp;%20%5Csim%20p(y_t%20%7C%20x_t),%0A%5Cend%7Balign%7D%0A%5Ctag%7B3%7D"></span></p>
-<p>con <img src="https://latex.codecogs.com/png.latex?t%5Cgeq%201">. A <img src="https://latex.codecogs.com/png.latex?p(x_%7Bt%7D%7Cx_%7Bt-1%7D)"> se le conoce como el <strong>modelo dinámico</strong> mientras que <img src="https://latex.codecogs.com/png.latex?p(y_t%20%7C%20x_t)"> corresponde al <strong>modelo de medición</strong>. Por definición (y un poco por inspiración del diagrama) se cumple <strong>la propiedad de Markov (discreta) para los estados</strong> <img src="https://latex.codecogs.com/png.latex?x_t">:</p>
-<p><span id="eq-space-state-model-markov"><img src="https://latex.codecogs.com/png.latex?%0Ap(x_t%20%7C%20x_%7B0:t%E2%88%921%7D,%20y_%7B1:t%E2%88%921%7D)%20=%20p(x_t%20%7C%20x_%7Bt%E2%88%921%7D),%0A%5Ctag%7B4%7D"></span></p>
-<p>así como <strong>la independencia condicional de las observaciones</strong>:</p>
-<p><span id="eq-space-state-model-conditional-independence-obs"><img src="https://latex.codecogs.com/png.latex?%0Ap(y_t%20%7C%20x_%7B0:t%7D,%20y_%7B1:t%E2%88%921%7D)%20=%20p(y_t%20%7C%20x_%7Bt%7D).%0A%5Ctag%7B5%7D"></span></p>
-<p>En estas ecuaciones, la notación <img src="https://latex.codecogs.com/png.latex?v_%7Bt-k:t+%5Cell%7D"> para <img src="https://latex.codecogs.com/png.latex?k,%5Cell"> números naturales representa un vector con entradas de la colección <img src="https://latex.codecogs.com/png.latex?%5C%7Bv_t%5C%7D_%7Bt%5Cgeq%200%7D"> tomadas desde <img src="https://latex.codecogs.com/png.latex?v_%7Bt-k%7D"> hasta <img src="https://latex.codecogs.com/png.latex?v_%7Bt%20+%20%5Cell%7D">:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0Ax_%7Bt-k:t+%5Cell%7D%20=%20(x_%7Bt-k%7D,%20x_%7Bt-k%20+%201%7D,%20%5Cdots,%20x_%7Bt%20+%20%5Cell%20-%201%7D,%20x_%7Bt+%20%5Cell%7D)%5ET.%0A"></p>
-<p>La distribución conjunta de los estados al momento <img src="https://latex.codecogs.com/png.latex?T"> puede obtenerse fácilmente a partir de Markov (la ecuación&nbsp;4):</p>
-<p><span id="eq-markov-space-state-x0T"><img src="https://latex.codecogs.com/png.latex?%0Ap(x_%7B0:T%7D)%20=%20p(x_0)%20%5Cprod_%7Bt%20=%201%7D%5ET%20p(x_t%7Cx_%7Bt-1%7D).%0A%5Ctag%7B6%7D"></span></p>
-<p>Mientras que la independencia condicional de las observaciones implica también un producto para el vector de estados <img src="https://latex.codecogs.com/png.latex?y_%7B1:T%7D">:</p>
-<p><span id="eq-markov-space-state-y0T-condicional-x0T"><img src="https://latex.codecogs.com/png.latex?%0Ap(y_%7B1:T%7D%20%7C%20x_%7B0:T%7D%20)%20=%20%5Cprod%5Climits_%7Bt%20=%201%7D%5ET%20p(y_t%7Cx_t)%0A%5Ctag%7B7%7D"></span></p>
-<p>Una simple aplicación de bayes permite la estimación de los estados a partir de las observaciones y la combinación de la ecuación&nbsp;6 y la ecuación&nbsp;7:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0Ap(x_%7B0:T%7D%20%7C%20y_%7B1:T%7D%20)%20%5Cpropto%20p(y_%7B1:T%7D%20%7C%20x_%7B0:T%7D%20)%20%5Ccdot%20p(x_%7B0:T%7D)%0A"></p>
-<p>Hay tres distribuciones que son de importancia en el contexto de modelos de espacios de estados que pueden verse en la Tabla&nbsp;1:</p>
-<div id="tbl-distribuciones-espacio-estados-clasificacion" class="anchored">
-<table class="table">
-<caption>Tabla&nbsp;1: Distribuciones de importancia para modelos de espacios de estados</caption>
-<thead>
-<tr class="header">
-<th>Nombre</th>
-<th>Distribución</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Filtro</td>
-<td><img src="https://latex.codecogs.com/png.latex?p(x_t%7Cy_%7B1:t%7D)"></td>
-</tr>
-<tr class="even">
-<td>Suavizamiento</td>
-<td><img src="https://latex.codecogs.com/png.latex?p(x_%7Bt-%5Cell%7D%7Cy_%7B1:t%7D)"> con <img src="https://latex.codecogs.com/png.latex?%5Cell%20%5Cgeq%200"></td>
-</tr>
-<tr class="odd">
-<td>Predicción</td>
-<td><img src="https://latex.codecogs.com/png.latex?p(x_%7Bt+%5Cell%7D%7Cy_%7B1:t%7D)"> con <img src="https://latex.codecogs.com/png.latex?%5Cell%20%5Cgeq%201"></td>
-</tr>
-</tbody>
-</table>
+<section id="planteamiento-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="planteamiento-en-r">Planteamiento en <code>R</code></h2>
+<p>Lo que nos toca ahora es programar nuestro modelo para ello seguiremos la filosofía de tidymodels que pretende unificar bajo la misma notación todos los modelos. La notación básica es como sigue:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">modelo <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;">set_engine</span>(<span class="st" style="color: #20794D;">"tipo de ajuste"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-3">  <span class="fu" style="color: #4758AB;">fit</span>(<span class="st" style="color: #20794D;">"formula a ajustar"</span>, <span class="at" style="color: #657422;">data =</span> tus_datos)</span></code></pre></div>
 </div>
-<p>A continuación derivamos las distribuciones de cada uno de estos escenarios a partir de las propiedades de los modelos de espacios de estados.</p>
-<section id="section" class="level3">
-<h3 class="anchored" data-anchor-id="section"></h3>
+<p>A partir del ajuste se pueden predecir cosas con <code>predict</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">modelo <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;">set_engine</span>(<span class="st" style="color: #20794D;">"tipo de ajuste"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-3">  <span class="fu" style="color: #4758AB;">fit</span>(<span class="st" style="color: #20794D;">"formula a ajustar"</span>, <span class="at" style="color: #657422;">data =</span> tus_datos) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-4">  <span class="fu" style="color: #4758AB;">predict</span>()</span></code></pre></div>
+</div>
+<p>o extraer nuevos datos con <code>extract_fit_engine</code> y <code>tidy</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">modelo <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb6-2">  <span class="fu" style="color: #4758AB;">set_engine</span>(<span class="st" style="color: #20794D;">"tipo de ajuste"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb6-3">  <span class="fu" style="color: #4758AB;">fit</span>(<span class="st" style="color: #20794D;">"formula a ajustar"</span>, <span class="at" style="color: #657422;">data =</span> tus_datos) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb6-4">  <span class="fu" style="color: #4758AB;">extract_fit_engine</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb6-5">  <span class="fu" style="color: #4758AB;">tidy</span>()</span></code></pre></div>
+</div>
+<p>Comencemos con nuestro primer modelo: una regresión lineal clásica dada por:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BBrth15to17%7D%20%20%5Csim%20%5Ctextrm%7BNormal%7D(%5Ctext%7BIntercepto%7D%20+%20%5Ctext%7BPendiente%7D%5Ctimes%20%5Ctext%7BPovPct%7D,%20%5Csigma%5E2)%0A"></p>
+<p>En <code>R</code> el <code>engine</code> que necesitamos es “lm” que es el clásico:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="co" style="color: #5E5E5E;">#Ajusta un modelo lineal </span></span>
+<span id="cb7-2"><span class="co" style="color: #5E5E5E;">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb7-3">modelo_ajustado <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">linear_reg</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb7-4">  <span class="fu" style="color: #4758AB;">set_engine</span>(<span class="st" style="color: #20794D;">"lm"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb7-5">  <span class="fu" style="color: #4758AB;">fit</span>(Brth15to17 <span class="sc" style="color: #5E5E5E;">~</span> PovPct, <span class="at" style="color: #657422;">data =</span> emb_pob) <span class="co" style="color: #5E5E5E;">#Notación y ~ x</span></span></code></pre></div>
+</div>
+<p>Nota que a diferencia de <code>Stata</code>, <code>R</code> no arroja demasiados resultados. Podemos usar <code>extract_fit_engine</code> combinado con <code>summary</code> para obtenerlos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="co" style="color: #5E5E5E;">#Ajusta un modelo lineal </span></span>
+<span id="cb8-2"><span class="co" style="color: #5E5E5E;">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb8-3">modelo_ajustado <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-4">  <span class="fu" style="color: #4758AB;">extract_fit_engine</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-5">  <span class="fu" style="color: #4758AB;">summary</span>()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = Brth15to17 ~ PovPct, data = data)
 
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-11.2275  -3.6554  -0.0407   2.4972  10.5152 
 
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   4.2673     2.5297   1.687    0.098 .  
+PovPct        1.3733     0.1835   7.483 1.19e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.551 on 49 degrees of freedom
+Multiple R-squared:  0.5333,    Adjusted R-squared:  0.5238 
+F-statistic:    56 on 1 and 49 DF,  p-value: 1.188e-09</code></pre>
+</div>
+</div>
+<p>o bien con <code>tidy</code> si deseamos nos devuelva una tabla de resultados:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="co" style="color: #5E5E5E;">#Ajusta un modelo lineal </span></span>
+<span id="cb10-2"><span class="co" style="color: #5E5E5E;">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb10-3">modelo_ajustado <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-4">  <span class="fu" style="color: #4758AB;">extract_fit_engine</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-5">  <span class="fu" style="color: #4758AB;">tidy</span>() </span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term        estimate std.error statistic       p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;
+1 (Intercept)     4.27     2.53       1.69 0.0980       
+2 PovPct          1.37     0.184      7.48 0.00000000119</code></pre>
+</div>
+</div>
+<p>Según el tipo de regresión que estemos haciendo es el tipo de tabla que regresa <code>tidy</code> (ver <code>?tidy</code>). En particular, por ejemplo, podemos modificar para que devuelva intervalos de confianza al 90%:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="co" style="color: #5E5E5E;">#Ajusta un modelo lineal </span></span>
+<span id="cb12-2"><span class="co" style="color: #5E5E5E;">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb12-3">modelo_ajustado <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb12-4">  <span class="fu" style="color: #4758AB;">tidy</span>(<span class="at" style="color: #657422;">conf.int =</span> T, <span class="at" style="color: #657422;">conf.level =</span> <span class="fl" style="color: #AD0000;">0.90</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 7
+  term        estimate std.error statistic       p.value conf.low conf.high
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)     4.27     2.53       1.69 0.0980          0.0260      8.51
+2 PovPct          1.37     0.184      7.48 0.00000000119   1.07        1.68</code></pre>
+</div>
+</div>
+<p>En este caso, el modelo estima que el intercepto (<img src="https://latex.codecogs.com/png.latex?%5Cbeta_0">) es <img src="https://latex.codecogs.com/png.latex?4.27"> y la pendiente (<img src="https://latex.codecogs.com/png.latex?%5Cbeta_1">) es <img src="https://latex.codecogs.com/png.latex?1.37">. Como son <em>estimadores</em> del verdadero valor se denotan con <em>gorrito</em>: <img src="https://latex.codecogs.com/png.latex?%5Chat%5Cbeta_0%20=%204.27"> y <img src="https://latex.codecogs.com/png.latex?%5Chat%5Cbeta_1%20=%201.37">.</p>
+<p>Podemos utilizar la función de <code>predict</code> para que el modelo nos muestre cómo cree que son los verdaderos valores en relación a los ajustados:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="co" style="color: #5E5E5E;">#Ajusta un modelo lineal </span></span>
+<span id="cb14-2"><span class="co" style="color: #5E5E5E;">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb14-3">predichos <span class="ot" style="color: #003B4F;">&lt;-</span> modelo_ajustado <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb14-4">  <span class="fu" style="color: #4758AB;">predict</span>(<span class="at" style="color: #657422;">new_data =</span> emb_pob)</span>
+<span id="cb14-5"></span>
+<span id="cb14-6">intervalo_predichos <span class="ot" style="color: #003B4F;">&lt;-</span> modelo_ajustado <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb14-7">  <span class="fu" style="color: #4758AB;">predict</span>(<span class="at" style="color: #657422;">new_data =</span> emb_pob, <span class="at" style="color: #657422;">type =</span> <span class="st" style="color: #20794D;">"pred_int"</span>, <span class="at" style="color: #657422;">level =</span> <span class="fl" style="color: #AD0000;">0.95</span>)</span>
+<span id="cb14-8"></span>
+<span id="cb14-9"><span class="co" style="color: #5E5E5E;">#Juntamos los predichos con los observados</span></span>
+<span id="cb14-10">obs_y_modelo <span class="ot" style="color: #003B4F;">&lt;-</span> emb_pob <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb14-11">  <span class="fu" style="color: #4758AB;">cbind</span>(predichos) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb14-12">  <span class="fu" style="color: #4758AB;">cbind</span>(intervalo_predichos)</span>
+<span id="cb14-13"></span>
+<span id="cb14-14"><span class="co" style="color: #5E5E5E;">#Graficamos</span></span>
+<span id="cb14-15"><span class="fu" style="color: #4758AB;">ggplot</span>(obs_y_modelo) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-16">  <span class="fu" style="color: #4758AB;">geom_ribbon</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> PovPct, <span class="at" style="color: #657422;">ymin =</span> .pred_lower, <span class="at" style="color: #657422;">ymax =</span> .pred_upper), </span>
+<span id="cb14-17">              <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"#003f5c"</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">alpha =</span> <span class="fl" style="color: #AD0000;">0.5</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-18">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> PovPct, <span class="at" style="color: #657422;">y =</span> Brth15to17), <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#bc5090"</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">3</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-19">  <span class="fu" style="color: #4758AB;">geom_line</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> PovPct, <span class="at" style="color: #657422;">y =</span> .pred), </span>
+<span id="cb14-20">            <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#003f5c"</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">1</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-21">  <span class="fu" style="color: #4758AB;">labs</span>(</span>
+<span id="cb14-22">    <span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">"Porcentaje en pobreza"</span>,</span>
+<span id="cb14-23">    <span class="at" style="color: #657422;">y =</span> <span class="st" style="color: #20794D;">"Tasa bruta de natalidad (por cada 1,000 mujeres adolescentes)"</span>,</span>
+<span id="cb14-24">    <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Relación entre tasa bruta de natalidad en adolescentes</span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;">de 15 a 19 años y porcentaje en pobreza"</span></span>
+<span id="cb14-25">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-26">  <span class="fu" style="color: #4758AB;">theme_bw</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Nada más a ojo no parece que el modelo sea el mejor pues puedes ver que no explica bien la variabilidad (los observados varían mucho respecto al intervalo). La <img src="https://latex.codecogs.com/png.latex?R%5E2">, una métrica que explica cuánto de la varianza captura el modelo tampoco es muy buena:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">resumen_ajuste <span class="ot" style="color: #003B4F;">&lt;-</span> modelo_ajustado <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb15-2">  <span class="fu" style="color: #4758AB;">extract_fit_engine</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb15-3">  <span class="fu" style="color: #4758AB;">summary</span>()</span>
+<span id="cb15-4"></span>
+<span id="cb15-5"><span class="co" style="color: #5E5E5E;">#R^2 clásica</span></span>
+<span id="cb15-6">resumen_ajuste<span class="sc" style="color: #5E5E5E;">$</span>r.squared</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.533328</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="co" style="color: #5E5E5E;">#R^2 ajustada</span></span>
+<span id="cb17-2">resumen_ajuste<span class="sc" style="color: #5E5E5E;">$</span>adj.r.squared</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.523804</code></pre>
+</div>
+</div>
+<p>Podemos checar las diferentes gráficas de diagnóstico:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;">library</span>(ggfortify)</span>
+<span id="cb19-2"><span class="fu" style="color: #4758AB;">autoplot</span>(modelo_ajustado, <span class="at" style="color: #657422;">which =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">5</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Veamos qué significa cada una de ellas y juguemos un poco con <code>R</code> para irlas modificando.</p>
+<section id="residuales-contra-ajustados" class="level3">
+<h3 class="anchored" data-anchor-id="residuales-contra-ajustados">Residuales contra ajustados</h3>
+<p>Los <strong>residuales</strong> son la diferencia entre el modelo (<img src="https://latex.codecogs.com/png.latex?%5Chat%7By%7D">) y lo real <img src="https://latex.codecogs.com/png.latex?y">. En el caso que estábamos trabajando tenemos que con nuestro modelo podemos predecir los valores de <code>Brth15to17</code> a partir del porcentaje en pobreza <code>PovPct</code>. A los valores predichos por el modelo de <code>Brth15to17</code> les ponemos un gorro encima y los llamamos: <img src="https://latex.codecogs.com/png.latex?%5Cwidehat%7B%5Ctext%7BBrth15to17%7D%7D">. Estos están dados por la siguiente función:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cwidehat%7B%5Ctext%7BBrth15to17%7D%7D%20=%204.26%20+%201.37%20%5Ccdot%20%5Ctext%7BPovPct%7D%0A"></p>
+<p>por ejemplo para el porcentaje en pobreza de <img src="https://latex.codecogs.com/png.latex?20.1"> obtendríamos:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cwidehat%7B%5Ctext%7BBrth15to17%7D%7D%20=%204.26%20+%201.37%20%5Ccdot%20%5Ctext%7BPovPct%7D%20=%2031.797%0A"></p>
+<p>por otro lado el verdadero valor de cuando el <code>PovPct</code> es <img src="https://latex.codecogs.com/png.latex?20.1"> (estado de <code>Alabama</code>) es <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BBrth15to17%7D%20=%2031.5">. La diferencia entre el verdadero valor (<img src="https://latex.codecogs.com/png.latex?%5Ctext%7BBrth15to17%7D%20=%2031.5">) y el predicho por el modelo (<img src="https://latex.codecogs.com/png.latex?%5Cwidehat%7B%5Ctext%7BBrth15to17%7D%7D%20=%2031.797">) se conoce como el residual. La idea es que en un modelo bueno no debe haber patrones en los residuales (todos deben de flotar en torno al cero pero no mostrar un patrón).</p>
+<p>Veamoslo en nuestra base:</p>
+<div class="cell">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1">obs_y_modelo <span class="ot" style="color: #003B4F;">&lt;-</span> obs_y_modelo <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb20-2">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">residuales =</span> Brth15to17 <span class="sc" style="color: #5E5E5E;">-</span> .pred)</span>
+<span id="cb20-3"></span>
+<span id="cb20-4"><span class="fu" style="color: #4758AB;">ggplot</span>(obs_y_modelo) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb20-5">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> .pred, <span class="at" style="color: #657422;">y =</span> residuales), <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#ff6361"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb20-6">  <span class="fu" style="color: #4758AB;">labs</span>(</span>
+<span id="cb20-7">    <span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">"Valores ajustados (predichos)"</span>,</span>
+<span id="cb20-8">    <span class="at" style="color: #657422;">y =</span> <span class="st" style="color: #20794D;">"Residuales"</span>,</span>
+<span id="cb20-9">    <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Residuales vs ajustados"</span></span>
+<span id="cb20-10">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb20-11">  <span class="fu" style="color: #4758AB;">theme_bw</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb20-12">  <span class="fu" style="color: #4758AB;">geom_hline</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">yintercept =</span> <span class="dv" style="color: #AD0000;">0</span>), <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>En esta gráfica el modelo predice mejor rumbo al final que en medio y esto parece estar corroborado por la gráfica del modelo (previa). Nada más para darnos una idea veamos una gráfica de <em>malos</em> residuales y una de <em>buenos</em></p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="escala-locación" class="level3">
+<h3 class="anchored" data-anchor-id="escala-locación">Escala locación</h3>
+<p>Representa la escala locación contra los residuales estandarizados. La idea de la gráfica es ver que la varianza <img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2"> del modelo no cambie conforme cambia la <img src="https://latex.codecogs.com/png.latex?x"> (propiedad de <em>homoscedasticidad</em>). Para ello graficamos los residuales estandarizados dados por los residuales mismos dividos entre su desviación estándar:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ar_%7B%5Ctext%7BStd%7D%7D%20=%20%5Cfrac%7B%5Chat%7By%7D%20-%20y%7D%7B%5Ctext%7Bsd%7D(%5Chat%7By%7D%20-%20y)%7D%20=%20%5Cfrac%7B%5Ctext%7BResiduales%7D%7D%7B%5Ctext%7Bsd%7D%5Cbig(%5Ctext%7BResiduales%7D%5Cbig)%7D%0A"></p>
+<p>estos residuales estandarizados los podemos calcular en <code>R</code> como sigue:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1">obs_y_modelo <span class="ot" style="color: #003B4F;">&lt;-</span> obs_y_modelo <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb21-2">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">residuales_std =</span> residuales<span class="sc" style="color: #5E5E5E;">/</span><span class="fu" style="color: #4758AB;">sd</span>(residuales))</span></code></pre></div>
+</div>
+<p>Si los graficamos contra los valores ajustados no deberíamos de ver ningún patrón:</p>
+<div class="cell">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><span class="fu" style="color: #4758AB;">ggplot</span>(obs_y_modelo) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb22-2">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> .pred, <span class="at" style="color: #657422;">y =</span> residuales_std), <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#ff6361"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb22-3">  <span class="fu" style="color: #4758AB;">labs</span>(</span>
+<span id="cb22-4">    <span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">"Valores ajustados (predichos)"</span>,</span>
+<span id="cb22-5">    <span class="at" style="color: #657422;">y =</span> <span class="st" style="color: #20794D;">"Residuales estandarizados"</span>,</span>
+<span id="cb22-6">    <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Escala Locación"</span></span>
+<span id="cb22-7">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb22-8">  <span class="fu" style="color: #4758AB;">theme_bw</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb22-9">  <span class="fu" style="color: #4758AB;">geom_hline</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">yintercept =</span> <span class="dv" style="color: #AD0000;">0</span>), <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Podemos ver cómo se ven estos puntos en el modelo ideal vs en un modelo donde la <img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2"> depende de la <img src="https://latex.codecogs.com/png.latex?x">:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="normal-cuantil-cuantil" class="level3">
+<h3 class="anchored" data-anchor-id="normal-cuantil-cuantil">Normal cuantil cuantil</h3>
+<p>La segunda gráfica corresponde a una gráfica cuantil cuantil. Esta la utilizamos para verificar la hipótesis de normalidad. En una gráfica cuantil cuantil se grafican los cuantiles de los residuales contra los cuantiles teóricos de la normal. Por ejemplo si la hacemos con sólo 4 puntos se vería algo así:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Podemos armar una gráfica cuantil cuantil con <code>ggplot2</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="fu" style="color: #4758AB;">ggplot</span>(obs_y_modelo, <span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">sample =</span> residuales)) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb23-2">  <span class="fu" style="color: #4758AB;">stat_qq</span>(<span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#ff6361"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb23-3">  <span class="fu" style="color: #4758AB;">stat_qq_line</span>(<span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#58508d"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb23-4">  <span class="fu" style="color: #4758AB;">theme_bw</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb23-5">  <span class="fu" style="color: #4758AB;">labs</span>(</span>
+<span id="cb23-6">    <span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">"Cuantiles teóricos de la normal"</span>,</span>
+<span id="cb23-7">    <span class="at" style="color: #657422;">y =</span> <span class="st" style="color: #20794D;">"Cuantiles observados de los residuales"</span>,</span>
+<span id="cb23-8">    <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Gráfica qq"</span></span>
+<span id="cb23-9">  )</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>La idea de la gráfica cuantil cuantil es que los puntos sigan la línea lo más posible. Veamos cómo se ve con los datos bien (y los mal)</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="residuales-contra-apalancamiento" class="level3">
+<h3 class="anchored" data-anchor-id="residuales-contra-apalancamiento">Residuales contra apalancamiento</h3>
+<p>El apalancamiento representa qué tanto cambia el modelo al quitar una sola observación. Para poner un ejemplo considera los siguientes datos donde hay un valor atípico y selecciono dos puntos de interés en dos colores:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Veamos cómo cambia la regresión si dejo todos los puntos, si quito el normal y si quito el influyente:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Nota que el modelo no cambia prácticamente nada cuando hago la regresión sin el dato que marqué como <code>normal</code> pero cambia mucho cuando quito el que marqué como <code>influyente</code>. La gráfica de residuales contra apalancamiento muestra también el valor extraño:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>El apalancamiento mide la influencia de un dato y en <code>R</code> se puede calcular con <code>hatvalues</code>. Los datos con mayor <strong>apalancamiento</strong> siempre valen la pena checarlos para verificar que todo opera en orden.</p>
+<div class="cell">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1">apalancamiento <span class="ot" style="color: #003B4F;">&lt;-</span> modelo_ajustado <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb24-2">  <span class="fu" style="color: #4758AB;">extract_fit_engine</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb24-3">  <span class="fu" style="color: #4758AB;">hatvalues</span>()</span>
+<span id="cb24-4"></span>
+<span id="cb24-5">obs_y_modelo <span class="ot" style="color: #003B4F;">&lt;-</span> obs_y_modelo <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb24-6">  <span class="fu" style="color: #4758AB;">cbind</span>(apalancamiento)</span>
+<span id="cb24-7"></span>
+<span id="cb24-8"><span class="co" style="color: #5E5E5E;">#Graficamos residuales contra apalancamiento</span></span>
+<span id="cb24-9"><span class="fu" style="color: #4758AB;">ggplot</span>(obs_y_modelo) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb24-10">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> apalancamiento, <span class="at" style="color: #657422;">y =</span> residuales), <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#ff6361"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb24-11">  <span class="fu" style="color: #4758AB;">labs</span>(</span>
+<span id="cb24-12">    <span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">"Apalancamiento"</span>,</span>
+<span id="cb24-13">    <span class="at" style="color: #657422;">y =</span> <span class="st" style="color: #20794D;">"Residuales"</span>,</span>
+<span id="cb24-14">    <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Residuales vs ajustados"</span></span>
+<span id="cb24-15">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb24-16">  <span class="fu" style="color: #4758AB;">theme_bw</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb24-17">  <span class="fu" style="color: #4758AB;">geom_hline</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">yintercept =</span> <span class="dv" style="color: #AD0000;">0</span>), <span class="at" style="color: #657422;">linetype =</span> <span class="st" style="color: #20794D;">"dashed"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="distancia-de-cook" class="level3">
+<h3 class="anchored" data-anchor-id="distancia-de-cook">Distancia de Cook</h3>
+<p>La distancia de Cook es un concepto similar al apalancamiento que identifica observaciones influyentes. Aquellos valores con distancia de Cook alta vale la pena revisar. En <code>R</code> podemos usar <code>cooks.distance</code> para calcular la distancia de Cook.</p>
+<div class="cell">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1">distanciaCook <span class="ot" style="color: #003B4F;">&lt;-</span> modelo_ajustado <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb25-2">  <span class="fu" style="color: #4758AB;">extract_fit_engine</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb25-3">  <span class="fu" style="color: #4758AB;">cooks.distance</span>()</span>
+<span id="cb25-4"></span>
+<span id="cb25-5">obs_y_modelo <span class="ot" style="color: #003B4F;">&lt;-</span> obs_y_modelo <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb25-6">  <span class="fu" style="color: #4758AB;">cbind</span>(distanciaCook)</span>
+<span id="cb25-7"></span>
+<span id="cb25-8"><span class="co" style="color: #5E5E5E;">#Graficamos residuales contra apalancamiento</span></span>
+<span id="cb25-9"><span class="fu" style="color: #4758AB;">ggplot</span>(obs_y_modelo) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb25-10">  <span class="fu" style="color: #4758AB;">geom_col</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="fu" style="color: #4758AB;">nrow</span>(obs_y_modelo), <span class="at" style="color: #657422;">y =</span> distanciaCook), <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"#ff6361"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb25-11">  <span class="fu" style="color: #4758AB;">labs</span>(</span>
+<span id="cb25-12">    <span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">"Observación (número de entrada en la base)"</span>,</span>
+<span id="cb25-13">    <span class="at" style="color: #657422;">y =</span> <span class="st" style="color: #20794D;">"Distancia de Cook"</span>,</span>
+<span id="cb25-14">    <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Distancia de Cook"</span></span>
+<span id="cb25-15">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb25-16">  <span class="fu" style="color: #4758AB;">theme_bw</span>() </span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>podemos ver que en el ejemplo anterior (el de la observación influyente) la distancia de Cook es exagerada, tan exagerada que ni se alcanzan a ver los otros:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 </section>
-
-
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Notas</h2>
-
-<ol>
-<li id="fn1"><p>Aún más general, tanto <img src="https://latex.codecogs.com/png.latex?f"> como <img src="https://latex.codecogs.com/png.latex?h"> podrían ser funciones que dependieran explícitamente del tiempo: <img src="https://latex.codecogs.com/png.latex?x_t%20=%20f_t(x_%7Bt-1%7D,%20%5Ceta_t)"> y <img src="https://latex.codecogs.com/png.latex?y_t%20=%20h_t(x_t,%5Cepsilon_t)">. No consideraré este caso pues se puede trabajar con una variable <img src="https://latex.codecogs.com/png.latex?x_t"> ampliada dada por <img src="https://latex.codecogs.com/png.latex?x%5E%7B%5Ccirc%7D_t%20:=%20(t,%20x_t)%5ET">↩︎</p></li>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<ol type="1">
+<li>Corre el siguiente código para generar una base de datos de nombre <code>datLong</code> que contiene <img src="https://latex.codecogs.com/png.latex?4"> grupos. Para cada grupo genere una regresión lineal de la forma:</li>
 </ol>
-</section></div> ]]></description>
-  <category>modelos de espacios de estados / state space models</category>
-  <category>estadística / statistics</category>
-  <category>series de tiempo / time series</category>
-  <category>bayes</category>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ay%20=%20%5Cbeta_0%20+%20%5Cbeta_1%20x%0A"></p>
+<p>Identifica cuáles regresiones sí ajustan bien y cuáles no mediante los gráficos de diagnóstico. Finalmente grafica tus datos <img src="https://latex.codecogs.com/png.latex?x"> contra <img src="https://latex.codecogs.com/png.latex?y"> y la regresión para ver que lo hayas hecho bien. ¿Hay alguna forma de corregir alguna de las que no ajusta bien?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1">dat <span class="ot" style="color: #003B4F;">&lt;-</span> datasets<span class="sc" style="color: #5E5E5E;">::</span>anscombe</span>
+<span id="cb26-2">datLong <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(</span>
+<span id="cb26-3">    <span class="at" style="color: #657422;">grupo  =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">4</span>, <span class="at" style="color: #657422;">each =</span> <span class="dv" style="color: #AD0000;">11</span>),</span>
+<span id="cb26-4">    <span class="at" style="color: #657422;">x =</span> <span class="fu" style="color: #4758AB;">unlist</span>(dat[,<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">4</span>)]),</span>
+<span id="cb26-5">    <span class="at" style="color: #657422;">y =</span> <span class="fu" style="color: #4758AB;">unlist</span>(dat[,<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">5</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">8</span>)])</span>
+<span id="cb26-6">    )</span>
+<span id="cb26-7"><span class="fu" style="color: #4758AB;">rownames</span>(datLong) <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cn" style="color: #8f5902;">NULL</span></span></code></pre></div>
+</div>
+<ol start="2" type="1">
+<li><p>Lee la base de datos de <img src="https://latex.codecogs.com/png.latex?n%20=%20345"> niños entre <img src="https://latex.codecogs.com/png.latex?6"> y <img src="https://latex.codecogs.com/png.latex?10"> años de <a href="https://online.stat.psu.edu/stat462/sites/onlinecourses.science.psu.edu.stat462/files/data/fev_dat/index.txt">Kahn, Michael (2005)</a>. Las variables de interés son <img src="https://latex.codecogs.com/png.latex?y%20=%20%5Ctext%7BFEV%7D"> el volumen de expiración forzada y <img src="https://latex.codecogs.com/png.latex?x%20=%20%5Ctext%7Bedad%7D"> en años. Realiza una regresión lineal. Justifica que no se cumple la homocedasticidad mediante una gráfica de escala locación.</p></li>
+<li><p>Plantee una regresión lineal usando <a href="https://data.princeton.edu/wws509/datasets/#salary">los datos de esta liga</a> para determinar si el sexo influye en el salario. <strong>Ojo</strong> en la regresión es necesario incluir otras covariables.</p></li>
+</ol>
+</section>
+<section id="y-si-lo-hacemos-bayesiano" class="level2">
+<h2 class="anchored" data-anchor-id="y-si-lo-hacemos-bayesiano">¿Y si lo hacemos bayesiano?</h2>
+<p>Para hacer la misma regresión lineal pero con estadística bayesiana podemos nada más cambiar el <code>engine</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><span class="co" style="color: #5E5E5E;">#Ajusta un modelo lineal </span></span>
+<span id="cb27-2"><span class="co" style="color: #5E5E5E;">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb27-3">modelo_bayesiano <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">linear_reg</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb27-4">  <span class="fu" style="color: #4758AB;">set_engine</span>(<span class="st" style="color: #20794D;">"stan"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb27-5">  <span class="fu" style="color: #4758AB;">fit</span>(Brth15to17 <span class="sc" style="color: #5E5E5E;">~</span> PovPct, <span class="at" style="color: #657422;">data =</span> emb_pob) <span class="co" style="color: #5E5E5E;">#Notación y ~ x</span></span></code></pre></div>
+</div>
+<p>Y podemos ver el ajuste:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1">modelo_bayesiano <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb28-2">  <span class="fu" style="color: #4758AB;">extract_fit_engine</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb28-3">  <span class="fu" style="color: #4758AB;">summary</span>()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Model Info:
+ function:     stan_glm
+ family:       gaussian [identity]
+ formula:      Brth15to17 ~ PovPct
+ algorithm:    sampling
+ sample:       4000 (posterior sample size)
+ priors:       see help('prior_summary')
+ observations: 51
+ predictors:   2
+
+Estimates:
+              mean   sd   10%   50%   90%
+(Intercept) 4.3    2.6  0.9   4.3   7.6  
+PovPct      1.4    0.2  1.1   1.4   1.6  
+sigma       5.6    0.6  5.0   5.6   6.4  
+
+Fit Diagnostics:
+           mean   sd   10%   50%   90%
+mean_PPD 22.3    1.1 20.8  22.3  23.7 
+
+The mean_ppd is the sample average posterior predictive distribution of the outcome variable (for details see help('summary.stanreg')).
+
+MCMC diagnostics
+              mcse Rhat n_eff
+(Intercept)   0.0  1.0  3485 
+PovPct        0.0  1.0  3441 
+sigma         0.0  1.0  3547 
+mean_PPD      0.0  1.0  3977 
+log-posterior 0.0  1.0  1709 
+
+For each parameter, mcse is Monte Carlo standard error, n_eff is a crude measure of effective sample size, and Rhat is the potential scale reduction factor on split chains (at convergence Rhat=1).</code></pre>
+</div>
+</div>
+<p>o realizar predicciones:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1">predichos <span class="ot" style="color: #003B4F;">&lt;-</span> modelo_bayesiano <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb30-2">  <span class="fu" style="color: #4758AB;">extract_fit_engine</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb30-3">  <span class="fu" style="color: #4758AB;">predict</span>(<span class="at" style="color: #657422;">new_data =</span> emb_pob)</span>
+<span id="cb30-4"></span>
+<span id="cb30-5">ic <span class="ot" style="color: #003B4F;">&lt;-</span> modelo_bayesiano <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb30-6">  <span class="fu" style="color: #4758AB;">extract_fit_engine</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb30-7">  <span class="fu" style="color: #4758AB;">predictive_interval</span>(<span class="at" style="color: #657422;">newdata =</span> emb_pob, <span class="at" style="color: #657422;">prob =</span> <span class="fl" style="color: #AD0000;">0.95</span>) <span class="co" style="color: #5E5E5E;">#Para bayesiana</span></span>
+<span id="cb30-8"></span>
+<span id="cb30-9"><span class="co" style="color: #5E5E5E;">#Juntamos los predichos con los observados</span></span>
+<span id="cb30-10">obs_y_modelo <span class="ot" style="color: #003B4F;">&lt;-</span> emb_pob <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb30-11">  <span class="fu" style="color: #4758AB;">cbind</span>(predichos) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb30-12">  <span class="fu" style="color: #4758AB;">cbind</span>(ic)</span>
+<span id="cb30-13"></span>
+<span id="cb30-14"><span class="co" style="color: #5E5E5E;">#Graficamos</span></span>
+<span id="cb30-15"><span class="fu" style="color: #4758AB;">ggplot</span>(obs_y_modelo) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb30-16">  <span class="fu" style="color: #4758AB;">geom_ribbon</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> PovPct, <span class="at" style="color: #657422;">ymin =</span> <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">2.5%</span><span class="st" style="color: #20794D;">`</span>, <span class="at" style="color: #657422;">ymax =</span> <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">97.5%</span><span class="st" style="color: #20794D;">`</span>), </span>
+<span id="cb30-17">              <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"#003f5c"</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">alpha =</span> <span class="fl" style="color: #AD0000;">0.5</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb30-18">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> PovPct, <span class="at" style="color: #657422;">y =</span> Brth15to17), <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#ffa600"</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">3</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb30-19">  <span class="fu" style="color: #4758AB;">geom_line</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> PovPct, <span class="at" style="color: #657422;">y =</span> predichos), </span>
+<span id="cb30-20">            <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#003f5c"</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">1</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb30-21">  <span class="fu" style="color: #4758AB;">labs</span>(</span>
+<span id="cb30-22">    <span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">"Porcentaje en pobreza"</span>,</span>
+<span id="cb30-23">    <span class="at" style="color: #657422;">y =</span> <span class="st" style="color: #20794D;">"Tasa bruta de natalidad (por cada 1,000 mujeres adolescentes)"</span>,</span>
+<span id="cb30-24">    <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Relación entre tasa bruta de natalidad en adolescentes</span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;">de 15 a 19 años y porcentaje en pobreza"</span></span>
+<span id="cb30-25">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb30-26">  <span class="fu" style="color: #4758AB;">theme_bw</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Para validación del modelo puedes checar <a href="https://mc-stan.org/rstanarm/articles/rstanarm.html#step-3-criticize-the-model-1">esta página</a> que explica <code>loo</code> (<a href="https://arxiv.org/abs/1507.04544">ver paper</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1">modelo_bayesiano <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb31-2">  <span class="fu" style="color: #4758AB;">extract_fit_engine</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb31-3">  <span class="fu" style="color: #4758AB;">loo</span>()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Computed from 4000 by 51 log-likelihood matrix
+
+         Estimate  SE
+elpd_loo   -161.6 4.2
+p_loo         2.4 0.5
+looic       323.2 8.4
+------
+Monte Carlo SE of elpd_loo is 0.0.
+
+All Pareto k estimates are good (k &lt; 0.5).
+See help('pareto-k-diagnostic') for details.</code></pre>
+</div>
+</div>
+<p>asi como su visualización (si el modelo no fuera bueno)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1">modelo_bayesiano <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb33-2">  <span class="fu" style="color: #4758AB;">extract_fit_engine</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb33-3">  <span class="fu" style="color: #4758AB;">loo</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb33-4">  <span class="fu" style="color: #4758AB;">plot</span>(<span class="at" style="color: #657422;">label_points =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="ejercicio" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicio">Ejercicio</h2>
+<ol type="1">
+<li>Utilice las opciones de <code>engine</code> para cambiar el <code>prior_intercept</code> del intercepto a una <code>t</code> de Student y el <code>prior</code> de los coeficientes a una <code>Laplace</code>. ¿Cambia mucho el resultado?</li>
+</ol>
+</section>
+</section>
+<section id="sistema" class="level1">
+<h1>Sistema</h1>
+<div class="cell">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1">sessioninfo<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">session_info</span>()</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.2.1 (2022-06-23)
+ os       macOS Big Sur ... 10.16
+ system   x86_64, darwin17.0
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       America/Mexico_City
+ date     2022-11-06
+ pandoc   2.19.2 @ /Applications/RStudio.app/Contents/MacOS/quarto/bin/tools/ (via rmarkdown)
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ ! package       * version    date (UTC) lib source
+ P assertthat      0.2.1      2019-03-21 [?] CRAN (R 4.2.0)
+ P backports       1.4.1      2021-12-13 [?] CRAN (R 4.2.0)
+ P base64enc       0.1-3      2015-07-28 [?] CRAN (R 4.2.0)
+ P bayesplot       1.9.0      2022-03-10 [?] CRAN (R 4.2.0)
+ P bit             4.0.4      2020-08-04 [?] CRAN (R 4.2.0)
+ P bit64           4.0.5      2020-08-30 [?] CRAN (R 4.2.0)
+ P boot            1.3-28     2021-05-03 [?] CRAN (R 4.2.1)
+ P broom         * 1.0.1      2022-08-29 [?] CRAN (R 4.2.0)
+ P cachem          1.0.6      2021-08-19 [?] CRAN (R 4.2.0)
+ P callr           3.7.2      2022-08-22 [?] CRAN (R 4.2.0)
+ P cellranger      1.1.0      2016-07-27 [?] CRAN (R 4.2.0)
+ P class           7.3-20     2022-01-16 [?] CRAN (R 4.2.1)
+ P cli             3.4.1      2022-09-23 [?] CRAN (R 4.2.0)
+ P codetools       0.2-18     2020-11-04 [?] CRAN (R 4.2.1)
+ P colorspace      2.0-3      2022-02-21 [?] CRAN (R 4.2.0)
+ P colourpicker    1.2.0      2022-10-28 [?] CRAN (R 4.2.0)
+ P conflicted      1.1.0      2021-11-26 [?] CRAN (R 4.2.0)
+ P cowplot       * 1.1.1      2020-12-30 [?] CRAN (R 4.2.0)
+ P crayon          1.5.2      2022-09-29 [?] CRAN (R 4.2.0)
+ P crosstalk       1.2.0      2021-11-04 [?] CRAN (R 4.2.0)
+ P curl            4.3.3      2022-10-06 [?] CRAN (R 4.2.1)
+ P DBI             1.1.3      2022-06-18 [?] CRAN (R 4.2.0)
+ P dbplyr          2.2.1      2022-06-27 [?] CRAN (R 4.2.0)
+ P dials         * 1.1.0      2022-11-04 [?] CRAN (R 4.2.1)
+ P DiceDesign      1.9        2021-02-13 [?] CRAN (R 4.2.0)
+ P digest          0.6.29     2021-12-01 [?] CRAN (R 4.2.0)
+ P dplyr         * 1.0.10     2022-09-01 [?] CRAN (R 4.2.0)
+ P DT              0.26       2022-10-19 [?] CRAN (R 4.2.0)
+ P dygraphs        1.1.1.6    2018-07-11 [?] CRAN (R 4.2.0)
+ P ellipsis        0.3.2      2021-04-29 [?] CRAN (R 4.2.0)
+ P evaluate        0.16       2022-08-09 [?] CRAN (R 4.2.0)
+ P fansi           1.0.3      2022-03-24 [?] CRAN (R 4.2.0)
+ P farver          2.1.1      2022-07-06 [?] CRAN (R 4.2.0)
+ P fastmap         1.1.0      2021-01-25 [?] CRAN (R 4.2.0)
+ P forcats       * 0.5.2      2022-08-19 [?] CRAN (R 4.2.0)
+ P foreach         1.5.2      2022-02-02 [?] CRAN (R 4.2.0)
+ P fs              1.5.2      2021-12-08 [?] CRAN (R 4.2.0)
+ P furrr           0.3.1      2022-08-15 [?] CRAN (R 4.2.0)
+ P future          1.28.0     2022-09-02 [?] CRAN (R 4.2.0)
+ P future.apply    1.10.0     2022-11-05 [?] CRAN (R 4.2.1)
+ P gargle          1.2.1      2022-09-08 [?] CRAN (R 4.2.0)
+ P generics        0.1.3      2022-07-05 [?] CRAN (R 4.2.0)
+ P ggfortify     * 0.4.14     2022-01-03 [?] CRAN (R 4.2.0)
+ P ggplot2       * 3.3.6      2022-05-03 [?] CRAN (R 4.2.0)
+ P ggridges      * 0.5.4      2022-09-26 [?] CRAN (R 4.2.0)
+ P globals         0.16.1     2022-08-28 [?] CRAN (R 4.2.0)
+ P glue            1.6.2      2022-02-24 [?] CRAN (R 4.2.0)
+ P googledrive     2.0.0      2021-07-08 [?] CRAN (R 4.2.0)
+ P googlesheets4   1.0.1      2022-08-13 [?] CRAN (R 4.2.0)
+ P gower           1.0.0      2022-02-03 [?] CRAN (R 4.2.0)
+ P GPfit           1.0-8      2019-02-08 [?] CRAN (R 4.2.0)
+ P gridExtra       2.3        2017-09-09 [?] CRAN (R 4.2.0)
+ P gtable          0.3.1      2022-09-01 [?] CRAN (R 4.2.0)
+ P gtools          3.9.3      2022-07-11 [?] CRAN (R 4.2.0)
+ P hardhat         1.2.0      2022-06-30 [?] CRAN (R 4.2.0)
+ P haven           2.5.1      2022-08-22 [?] CRAN (R 4.2.0)
+ P hms             1.1.2      2022-08-19 [?] CRAN (R 4.2.0)
+ P htmltools       0.5.3      2022-07-18 [?] CRAN (R 4.2.0)
+ P htmlwidgets     1.5.4      2021-09-08 [?] CRAN (R 4.2.0)
+ P httpuv          1.6.6      2022-09-08 [?] CRAN (R 4.2.0)
+ P httr            1.4.4      2022-08-17 [?] CRAN (R 4.2.0)
+ P igraph          1.3.5      2022-09-22 [?] CRAN (R 4.2.0)
+ P infer         * 1.0.3      2022-08-22 [?] CRAN (R 4.2.0)
+ P inline          0.3.19     2021-05-31 [?] CRAN (R 4.2.0)
+ P ipred           0.9-13     2022-06-02 [?] CRAN (R 4.2.0)
+ P iterators       1.0.14     2022-02-05 [?] CRAN (R 4.2.0)
+ P jsonlite        1.8.2      2022-10-02 [?] CRAN (R 4.2.0)
+ P knitr           1.40       2022-08-24 [?] CRAN (R 4.2.0)
+ P labeling        0.4.2      2020-10-20 [?] CRAN (R 4.2.0)
+ P later           1.3.0      2021-08-18 [?] CRAN (R 4.2.0)
+ P lattice         0.20-45    2021-09-22 [?] CRAN (R 4.2.1)
+ P lava            1.7.0      2022-10-25 [?] CRAN (R 4.2.0)
+ P lhs             1.1.5      2022-03-22 [?] CRAN (R 4.2.0)
+ P lifecycle       1.0.3      2022-10-07 [?] CRAN (R 4.2.1)
+ P listenv         0.8.0      2019-12-05 [?] CRAN (R 4.2.0)
+ P lme4            1.1-31     2022-11-01 [?] CRAN (R 4.2.0)
+ P loo             2.5.1      2022-03-24 [?] CRAN (R 4.2.0)
+ P lubridate       1.8.0      2021-10-07 [?] CRAN (R 4.2.0)
+ P magrittr        2.0.3      2022-03-30 [?] CRAN (R 4.2.0)
+ P markdown        1.1        2019-08-07 [?] CRAN (R 4.2.0)
+ P MASS            7.3-58.1   2022-08-03 [?] CRAN (R 4.2.0)
+ P Matrix          1.5-1      2022-09-13 [?] CRAN (R 4.2.0)
+ P matrixStats     0.62.0     2022-04-19 [?] CRAN (R 4.2.0)
+ P memoise         2.0.1      2021-11-26 [?] CRAN (R 4.2.0)
+ P mgcv            1.8-41     2022-10-21 [?] CRAN (R 4.2.0)
+ P mime            0.12       2021-09-28 [?] CRAN (R 4.2.0)
+ P miniUI          0.1.1.1    2018-05-18 [?] CRAN (R 4.2.0)
+ P minqa           1.2.5      2022-10-19 [?] CRAN (R 4.2.0)
+ P modeldata     * 1.0.1      2022-09-06 [?] CRAN (R 4.2.0)
+ P modelr          0.1.9      2022-08-19 [?] CRAN (R 4.2.0)
+ P munsell         0.5.0      2018-06-12 [?] CRAN (R 4.2.0)
+ P nlme            3.1-160    2022-10-10 [?] CRAN (R 4.2.1)
+ P nloptr          2.0.3      2022-05-26 [?] CRAN (R 4.2.0)
+ P nnet            7.3-18     2022-09-28 [?] CRAN (R 4.2.0)
+ P parallelly      1.32.1     2022-07-21 [?] CRAN (R 4.2.0)
+ P parsnip       * 1.0.2      2022-10-01 [?] CRAN (R 4.2.0)
+ P pillar          1.8.1      2022-08-19 [?] CRAN (R 4.2.0)
+ P pkgbuild        1.3.1      2021-12-20 [?] CRAN (R 4.2.0)
+ P pkgconfig       2.0.3      2019-09-22 [?] CRAN (R 4.2.0)
+ P plyr            1.8.7      2022-03-24 [?] CRAN (R 4.2.0)
+ P prettyunits     1.1.1      2020-01-24 [?] CRAN (R 4.2.0)
+ P processx        3.7.0      2022-07-07 [?] CRAN (R 4.2.0)
+ P prodlim         2019.11.13 2019-11-17 [?] CRAN (R 4.2.0)
+ P promises        1.2.0.1    2021-02-11 [?] CRAN (R 4.2.0)
+ P ps              1.7.1      2022-06-18 [?] CRAN (R 4.2.0)
+ P purrr         * 0.3.5      2022-10-06 [?] CRAN (R 4.2.1)
+ P R6              2.5.1      2021-08-19 [?] CRAN (R 4.2.0)
+ P Rcpp          * 1.0.9      2022-07-08 [?] CRAN (R 4.2.0)
+ P RcppParallel    5.1.5      2022-01-05 [?] CRAN (R 4.2.0)
+ P readr         * 2.1.3      2022-10-01 [?] CRAN (R 4.2.0)
+ P readxl          1.4.1      2022-08-17 [?] CRAN (R 4.2.0)
+ P recipes       * 1.0.2      2022-10-16 [?] CRAN (R 4.2.0)
+   renv            0.16.0     2022-09-29 [1] CRAN (R 4.2.0)
+ P reprex          2.0.2      2022-08-17 [?] CRAN (R 4.2.0)
+ P reshape2        1.4.4      2020-04-09 [?] CRAN (R 4.2.0)
+ P rlang           1.0.6      2022-09-24 [?] CRAN (R 4.2.0)
+ P rmarkdown       2.16       2022-08-24 [?] CRAN (R 4.2.0)
+ P rpart           4.1.19     2022-10-21 [?] CRAN (R 4.2.0)
+ P rsample       * 1.1.0      2022-08-08 [?] CRAN (R 4.2.0)
+ P rstan           2.21.7     2022-09-08 [?] CRAN (R 4.2.0)
+ P rstanarm      * 2.21.3     2022-04-09 [?] CRAN (R 4.2.0)
+ P rstantools      2.2.0      2022-04-08 [?] CRAN (R 4.2.0)
+ P rstudioapi      0.14       2022-08-22 [?] CRAN (R 4.2.0)
+ P rvest           1.0.3      2022-08-19 [?] CRAN (R 4.2.0)
+ P scales        * 1.2.1      2022-08-20 [?] CRAN (R 4.2.0)
+ P sessioninfo     1.2.2      2021-12-06 [?] CRAN (R 4.2.0)
+ P shiny           1.7.3      2022-10-25 [?] CRAN (R 4.2.0)
+ P shinyjs         2.1.0      2021-12-23 [?] CRAN (R 4.2.0)
+ P shinystan       2.6.0      2022-03-03 [?] CRAN (R 4.2.0)
+ P shinythemes     1.2.0      2021-01-25 [?] CRAN (R 4.2.0)
+ P StanHeaders     2.21.0-7   2020-12-17 [?] CRAN (R 4.2.0)
+ P stringi         1.7.8      2022-07-11 [?] CRAN (R 4.2.0)
+ P stringr       * 1.4.1      2022-08-20 [?] CRAN (R 4.2.0)
+ P survival        3.4-0      2022-08-09 [?] CRAN (R 4.2.0)
+ P threejs         0.3.3      2020-01-21 [?] CRAN (R 4.2.0)
+ P tibble        * 3.1.8      2022-07-22 [?] CRAN (R 4.2.0)
+ P tidymodels    * 1.0.0      2022-07-13 [?] CRAN (R 4.2.0)
+ P tidyr         * 1.2.1      2022-09-08 [?] CRAN (R 4.2.0)
+ P tidyselect      1.2.0      2022-10-10 [?] CRAN (R 4.2.0)
+ P tidyverse     * 1.3.2      2022-07-18 [?] CRAN (R 4.2.0)
+ P timeDate        4021.106   2022-09-30 [?] CRAN (R 4.2.0)
+ P tune          * 1.0.1      2022-10-09 [?] CRAN (R 4.2.0)
+ P tzdb            0.3.0      2022-03-28 [?] CRAN (R 4.2.0)
+ P utf8            1.2.2      2021-07-24 [?] CRAN (R 4.2.0)
+ P vctrs           0.4.2      2022-09-29 [?] CRAN (R 4.2.0)
+ P vroom           1.6.0      2022-09-30 [?] CRAN (R 4.2.0)
+ P withr           2.5.0      2022-03-03 [?] CRAN (R 4.2.0)
+ P workflows     * 1.1.0      2022-09-26 [?] CRAN (R 4.2.0)
+ P workflowsets  * 1.0.0      2022-07-12 [?] CRAN (R 4.2.0)
+ P xfun            0.33       2022-09-12 [?] CRAN (R 4.2.0)
+ P xml2            1.3.3      2021-11-30 [?] CRAN (R 4.2.0)
+ P xtable          1.8-4      2019-04-21 [?] CRAN (R 4.2.0)
+ P xts             0.12.2     2022-10-16 [?] CRAN (R 4.2.0)
+ P yaml            2.3.5      2022-02-21 [?] CRAN (R 4.2.0)
+ P yardstick     * 1.1.0      2022-09-07 [?] CRAN (R 4.2.0)
+ P zoo             1.8-11     2022-09-17 [?] CRAN (R 4.2.0)
+
+ [1] /Users/rod/Dropbox/Statisticat/renv/library/R-4.2/x86_64-apple-darwin17.0
+ [2] /Users/rod/Dropbox/Statisticat/renv/sandbox/R-4.2/x86_64-apple-darwin17.0/84ba8b13
+
+ P ── Loaded and on-disk path mismatch.
+
+──────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>regresiones / regresión lineal / rstats / R</category>
   <category>español / Spanish</category>
-  <guid>https://rodrigozepeda.github.io/Statisticats/posts/state-space-models-1/index.html</guid>
-  <pubDate>Sat, 08 Oct 2022 05:00:00 GMT</pubDate>
-  <media:content url="https://rodrigozepeda.github.io/Statisticats/posts/state-space-models-1/sloyd_system.jpg" medium="image" type="image/jpeg"/>
+  <guid>https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index.html</guid>
+  <pubDate>Sun, 06 Nov 2022 06:00:00 GMT</pubDate>
+  <media:content url="https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/quetelet.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>

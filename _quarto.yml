@@ -14,7 +14,7 @@ website:
         href: https://twitter.com/RodZepeda
       - icon: rss
         href: index.xml
-  margin-header: suscribe.html        
+  margin-header: subscribe.html
 format:
   html:
     theme:

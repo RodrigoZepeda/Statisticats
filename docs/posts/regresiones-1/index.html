@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rodrigo Zepeda-Tello">
+
+<title>Statisticats 🐱 - Regresiones (parte 1)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sín resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la busqueda",
+    "search-hide-matches-text": "Esconder resultados adicionales",
+    "search-more-match-text": "hay más resultados en este documento",
+    "search-more-matches-text": "más resultados en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Eviar"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Statisticats 🐱</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About | Acerca de</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/RodrigoZepeda/Statisticats"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/RodZepeda"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
+<div class="form-group">
+  <form style="padding:3px;text-align:center;" action="https://tinyletter.com/RodZepeda" method="post" target="popupwindow" onsubmit="window.open('https://tinyletter.com/RodZepeda', 'popupwindow', 'scrollbars=yes,width=800,height=600');return true">
+    <fieldset>
+    <div class="form-group">
+    <label for="tlemail">Subscribe:</label>
+    <input type="text" class="form-control form-control-sm" name="email" id="tlemail" placeholder="name@email.com">
+    <input type="hidden" value="1" name="embed">
+    </div>
+    <div class="form-group">
+    <button type="submit" class="btn btn-primary btn-sm mt-2">Suscribe</button>
+    </div>
+    </fieldset>
+  </form>
+</div>
+
+        
+</div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#paquetes-y-datos-a-utilizar-en-r" id="toc-paquetes-y-datos-a-utilizar-en-r" class="nav-link active" data-scroll-target="#paquetes-y-datos-a-utilizar-en-r">Paquetes y datos a utilizar en R</a>
+  <ul class="collapse">
+  <li><a href="#embarazo-adolescente-y-pobreza" id="toc-embarazo-adolescente-y-pobreza" class="nav-link" data-scroll-target="#embarazo-adolescente-y-pobreza">Embarazo adolescente y pobreza</a></li>
+  </ul></li>
+  <li><a href="#regresiones-lineales" id="toc-regresiones-lineales" class="nav-link" data-scroll-target="#regresiones-lineales">Regresiones lineales</a>
+  <ul class="collapse">
+  <li><a href="#planteamiento-clásico" id="toc-planteamiento-clásico" class="nav-link" data-scroll-target="#planteamiento-clásico">Planteamiento clásico</a></li>
+  <li><a href="#planteamiento-en-r" id="toc-planteamiento-en-r" class="nav-link" data-scroll-target="#planteamiento-en-r">Planteamiento en <code>R</code></a>
+  <ul class="collapse">
+  <li><a href="#residuales-contra-ajustados" id="toc-residuales-contra-ajustados" class="nav-link" data-scroll-target="#residuales-contra-ajustados">Residuales contra ajustados</a></li>
+  <li><a href="#escala-locación" id="toc-escala-locación" class="nav-link" data-scroll-target="#escala-locación">Escala locación</a></li>
+  <li><a href="#normal-cuantil-cuantil" id="toc-normal-cuantil-cuantil" class="nav-link" data-scroll-target="#normal-cuantil-cuantil">Normal cuantil cuantil</a></li>
+  <li><a href="#residuales-contra-apalancamiento" id="toc-residuales-contra-apalancamiento" class="nav-link" data-scroll-target="#residuales-contra-apalancamiento">Residuales contra apalancamiento</a></li>
+  <li><a href="#distancia-de-cook" id="toc-distancia-de-cook" class="nav-link" data-scroll-target="#distancia-de-cook">Distancia de Cook</a></li>
+  </ul></li>
+  <li><a href="#ejercicios" id="toc-ejercicios" class="nav-link" data-scroll-target="#ejercicios">Ejercicios</a></li>
+  <li><a href="#y-si-lo-hacemos-bayesiano" id="toc-y-si-lo-hacemos-bayesiano" class="nav-link" data-scroll-target="#y-si-lo-hacemos-bayesiano">¿Y si lo hacemos bayesiano?</a></li>
+  <li><a href="#ejercicio" id="toc-ejercicio" class="nav-link" data-scroll-target="#ejercicio">Ejercicio</a></li>
+  </ul></li>
+  <li><a href="#sistema" id="toc-sistema" class="nav-link" data-scroll-target="#sistema">Sistema</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Regresiones (parte 1)</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">regresiones / regresión lineal / rstats / R</div>
+    <div class="quarto-category">español / Spanish</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor</div>
+    <div class="quarto-title-meta-contents">
+             <p>Rodrigo Zepeda-Tello </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Fecha de Publicación</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">6 de noviembre de 2022</p>
+    </div>
+  </div>
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="abstract-title">Resumen</div>
+    En esta entrada discutimos los fundamentos de una regresión lineal (punto de vista probabilístico) así como su programación y diagnóstico en <code>R</code>
+  </div>
+</div>
+
+</header>
+
+<div class="cell page-columns page-full">
+<div class="cell-output-display page-columns page-full">
+<div class="quarto-figure quarto-figure-center page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="quetelet.jpg" class="img-fluid figure-img" style="width:30.0%" alt="Litografía de Aldophe Quetelet."></p>
+<p></p><figcaption class="figure-caption margin-caption">Adolphe Quetelet fue quien popularizó el uso del método de mínimos cuadrados en las ciencias sociales. Fuente: <em>Miscellaneous Items in High Demand, PPOC, Library of Congress, Public domain, via Wikimedia Commons</em>.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="paquetes-y-datos-a-utilizar-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="paquetes-y-datos-a-utilizar-en-r">Paquetes y datos a utilizar en R</h2>
+<p>A lo largo de esta sección usaremos los siguientes paquetes:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggfortify)  <span class="co">#autoplot para diagnósticos</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstanarm)   <span class="co">#para regresión bayesiana</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Siempre que uses tidymodels</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_prefer</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En general usaremos la filosofía <code>tidymodels</code> para combinar los resultados con el <code>tidyverse</code>. Si quieres saber más de <code>tidymodels</code> te recomiendo checar <a href="https://www.tmwr.org">su libro</a> o <a href="https://www.tidymodels.org/learn/">su página web</a>.</p>
+<section id="embarazo-adolescente-y-pobreza" class="level3">
+<h3 class="anchored" data-anchor-id="embarazo-adolescente-y-pobreza">Embarazo adolescente y pobreza</h3>
+<p>Para los datos usaremos la información de <a href="https://online.stat.psu.edu/stat462/sites/onlinecourses.science.psu.edu.stat462/files/data/poverty/index.txt"><em>Utts y Heckard</em></a> para determinar si hay una relación entre embarazo adolescente y pobreza.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Lectura desde sitio web</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://online.stat.psu.edu/stat462/sites/onlinecourses.science.psu.edu.stat462/files/data/poverty/index.txt"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>emb_pob <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(url)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Las variables <code>Brth15to17</code> y <code>Brth18to19</code> son las tasas brutas de natalidad por cada 1000 mujeres (en el año 2002) en adolescentes de 15 a 17 años y de 18 a 19 respectivamente. La variable <code>PovPct</code> representa la proporción (%) de la población que vive bajo la línea de pobreza en cada una de las entidades de EEUU (<code>Location</code>). Las variables <code>ViolCrime</code> y <code>TeenBrth</code> no se explican por lo que no las usaremos.</p>
+</section>
+</section>
+<section id="regresiones-lineales" class="level1">
+<h1>Regresiones lineales</h1>
+<p>Usaremos <code>Brth15to17</code> y <code>PovPct</code> para estudiar si hay una relación entre la tasa de natalidad en adolescentes y el porcentaje de la población en pobreza. Para ello comenzaremos con graficar:</p>
+<div class="cell">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(emb_pob) <span class="sc">+</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> PovPct, <span class="at">y =</span> Brth15to17), <span class="at">color =</span> <span class="st">"#bc5090"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Porcentaje en pobreza"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Tasa bruta de natalidad (por cada 1,000 mujeres adolescentes)"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Relación entre tasa bruta de natalidad en adolescentes</span><span class="sc">\n</span><span class="st">de 15 a 19 años y porcentaje en pobreza"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Parece que a mayor porcentaje de pobreza, mayor tasa bruta de natalidad en adolescentes.</p>
+<section id="planteamiento-clásico" class="level2">
+<h2 class="anchored" data-anchor-id="planteamiento-clásico">Planteamiento clásico</h2>
+<p>Si la relación fuera perfecta todos los casos caerían <em>exactamente</em> en una línea recta como sigue:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>donde es necesario especificar dos parámetros: el intercepto (el valor que toma cuando la <span class="math inline">\(x\)</span> en este caso <code>PovPct</code> vale cero) y la pendiente (el valor que relaciona por cada unidad de aumento en <code>PovPct</code> cuánto aumenta <code>Brth15to17</code>).</p>
+<p>La ecuación de la línea está dada por:</p>
+<p><span class="math display">\[
+y = \beta_0 + \beta_1 x
+\]</span></p>
+<p>donde <span class="math inline">\(\beta_0\)</span> es el intercepto y <span class="math inline">\(\beta_1\)</span> la pendiente. Usando la terminología de arriba:</p>
+<p><span class="math display">\[
+\text{Brth15to17} = \text{Intercepto} + \text{Pendiente}\times \text{PovPct}
+\]</span> en particular en ese ejemplo:</p>
+<p><span class="math display">\[
+\text{Brth15to17} = 5 + 3\cdot \text{PovPct}
+\]</span></p>
+<p>La idea es que el intercepto (<span class="math inline">\(\beta_0\)</span> ó <span class="math inline">\(5\)</span>) te indica dónde comienza tu línea cuando no tienes <span class="math inline">\(x\)</span>’s (es decir cuando <span class="math inline">\(\text{PovPct} = 0\)</span>). El intercepto controla la altura de la línea como puedes ver en la siguiente gráfica donde puse varios interceptos distintos:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>por otro lado la idea de la pendiente (<span class="math inline">\(\beta_1\)</span> ó <span class="math inline">\(3\)</span>) es retratar cómo cambia la <span class="math inline">\(y\)</span> (en este caso <span class="math inline">\(\text{Brth15to17}\)</span>) por cada unidad que cambia la <span class="math inline">\(x\)</span> (en este caso <span class="math inline">\(\text{PovPct}\)</span>). El valor de <span class="math inline">\(3\)</span> por ejemplo indica que por cada aumento en 1 en <span class="math inline">\(\text{PovPct}\)</span> la variable <span class="math inline">\(\text{Brth15to17}\)</span> aumenta en <span class="math inline">\(3\)</span>. Este cambio es proporcional; es decir si ahora <span class="math inline">\(\text{PovPct}\)</span> aumenta 4 (por decir algo) <span class="math inline">\(\text{Brth15to17}\)</span> aumenta <span class="math inline">\(3\times 4 = 12\)</span> unidades. La siguiente gráfica muestra varias líneas todas comenzando en el mismo intercepto de <span class="math inline">\(5\)</span>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Como ya vimos en la primer figura el mundo no es tan perfecto que todo sea una línea recta. Hay un poco de aleatoriedad involucrada (sea por variables no medidas, por errores de medición o porque el mundo no sea determinista). Por lo cual se plantea que en lugar de que la <span class="math inline">\(y\)</span> sea <em>exactamente</em> <span class="math inline">\(\beta_0 + \beta_1 x\)</span> planteamos que la <span class="math inline">\(y\)</span> proviene de una variable aleatoria normal donde la media de esa normal <strong>es</strong> <span class="math inline">\(\beta_0 + \beta_1 x\)</span>; es decir:</p>
+<p><span class="math display">\[
+y \sim \textrm{Normal}( \beta_0 + \beta_1 x, \sigma^2)
+\]</span></p>
+<p>o dicho de otra manera:</p>
+<p><span class="math display">\[
+\text{Brth15to17}  \sim \textrm{Normal}(\text{Intercepto} + \text{Pendiente}\times \text{PovPct}, \sigma^2)
+\]</span></p>
+<p>donde la <span class="math inline">\(\sigma^2\)</span> es la varianza de dicha normal. Puesto gráficamente lo que esto quiere decir es que si, por ejemplo, el intercepto es <span class="math inline">\(5\)</span> y la pendiente <span class="math inline">\(3\)</span> entonces cada medición de <span class="math inline">\(y\)</span> viene de una normal ligeramente distinta:</p>
+<p><span class="math display">\[
+\text{Brth15to17}  \sim \textrm{Normal}(5 + 3\times \text{PovPct}, \sigma^2)
+\]</span></p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Dicho de otra forma, suponemos que en un mundo perfecto los valores de <span class="math inline">\(y\)</span> (<code>Brth15to17</code>) estarían completamente determinados por los de <span class="math inline">\(x\)</span> (<code>PovPct</code>) mediante la ecuación de la recta. <strong>Pero</strong> como el mundo no es perfecto entonces la <span class="math inline">\(y\)</span> proviene de una normal con promedio dado por la recta. Los puntos (como puedes ver an la siguiente gráfica) se centran más en torno a los promedios de las normales sin embargo están colocados aleatoriamente pues corresponden a distintas realizaciones de <span class="math inline">\(y\)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Por ejemplo si el porcentaje de pobreza (<code>PovPct</code>) es <span class="math inline">\(10\)</span> entonces la normal de la que provienen estos datos es:</p>
+<p><span class="math display">\[
+\text{Brth15to17}  \sim \textrm{Normal}(\underbrace{5 + 3\times 10}_{35}, \sigma^2)
+\]</span></p>
+<p>mientras que si el porcentaje en pobreza es <span class="math inline">\(20\)</span> entonces la normal es:</p>
+<p><span class="math display">\[
+\text{Brth15to17}  \sim \textrm{Normal}(\underbrace{5 + 3\times 20}_{65}, \sigma^2)
+\]</span></p>
+<p>Por supuesto que no hay nada de especial con el modelo normal y alguien podría elegir otra distribución (por ejemplo una Gamma) y establecer que:</p>
+<p><span class="math display">\[
+\text{Brth15to17}  \sim \textrm{Gamma}(\text{Intercepto} + \text{Pendiente}\times \text{PovPct}, \beta)
+\]</span></p>
+<p>Estos modelos son algunos de los lineales generalizados y los discutiremos más adelante. Por ahora nos quedaremos con la idea del modelo dado por:</p>
+<p><span class="math display">\[
+\text{Brth15to17}  \sim \textrm{Normal}(\text{Intercepto} + \text{Pendiente}\times \text{PovPct}, \sigma^2)
+\]</span></p>
+<blockquote class="blockquote">
+<p><strong>Nota</strong> quizá conoces la regresión lineal bajo la idea clásica de que <span class="math display">\[
+y = \beta_0 + \beta_1 x + \epsilon
+\]</span> donde <span class="math inline">\(\epsilon\sim\text{Normal}(0,\sigma^2)\)</span> son los errores normales. Esta definición es equivalente a la que damos aquí pues por <a href="https://en.wikipedia.org/wiki/Normal_distribution#Properties">propiedades aditivas de la normal</a> <span class="math inline">\(\epsilon + \beta_0 + \beta_1 x\)</span> se sigue distribuyendo normal pero con la media ahora dada por lo agregado (<span class="math inline">\(\beta_0 + \beta_1 x\)</span>). Las ventajas de esta notación es que un modelo para regresión Poisson es simplemente: <span class="math display">\[
+y \sim \textrm{Poisson}\big(\exp(\beta_0 + \beta_1 x)\big)
+\]</span> y un modelo para regresión logística es: <span class="math display">\[
+y \sim \textrm{Bernoulli}\big(\textrm{logit}(\beta_0 + \beta_1 x)\big)
+\]</span></p>
+</blockquote>
+</section>
+<section id="planteamiento-en-r" class="level2">
+<h2 class="anchored" data-anchor-id="planteamiento-en-r">Planteamiento en <code>R</code></h2>
+<p>Lo que nos toca ahora es programar nuestro modelo para ello seguiremos la filosofía de tidymodels que pretende unificar bajo la misma notación todos los modelos. La notación básica es como sigue:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"tipo de ajuste"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="st">"formula a ajustar"</span>, <span class="at">data =</span> tus_datos)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A partir del ajuste se pueden predecir cosas con <code>predict</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"tipo de ajuste"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="st">"formula a ajustar"</span>, <span class="at">data =</span> tus_datos) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>o extraer nuevos datos con <code>extract_fit_engine</code> y <code>tidy</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"tipo de ajuste"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="st">"formula a ajustar"</span>, <span class="at">data =</span> tus_datos) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Comencemos con nuestro primer modelo: una regresión lineal clásica dada por:</p>
+<p><span class="math display">\[
+\text{Brth15to17}  \sim \textrm{Normal}(\text{Intercepto} + \text{Pendiente}\times \text{PovPct}, \sigma^2)
+\]</span></p>
+<p>En <code>R</code> el <code>engine</code> que necesitamos es “lm” que es el clásico:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Ajusta un modelo lineal </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>modelo_ajustado <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lm"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Brth15to17 <span class="sc">~</span> PovPct, <span class="at">data =</span> emb_pob) <span class="co">#Notación y ~ x</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Nota que a diferencia de <code>Stata</code>, <code>R</code> no arroja demasiados resultados. Podemos usar <code>extract_fit_engine</code> combinado con <code>summary</code> para obtenerlos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Ajusta un modelo lineal </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>modelo_ajustado <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+stats::lm(formula = Brth15to17 ~ PovPct, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-11.2275  -3.6554  -0.0407   2.4972  10.5152 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   4.2673     2.5297   1.687    0.098 .  
+PovPct        1.3733     0.1835   7.483 1.19e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.551 on 49 degrees of freedom
+Multiple R-squared:  0.5333,    Adjusted R-squared:  0.5238 
+F-statistic:    56 on 1 and 49 DF,  p-value: 1.188e-09</code></pre>
+</div>
+</div>
+<p>o bien con <code>tidy</code> si deseamos nos devuelva una tabla de resultados:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Ajusta un modelo lineal </span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>modelo_ajustado <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>() </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term        estimate std.error statistic       p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;
+1 (Intercept)     4.27     2.53       1.69 0.0980       
+2 PovPct          1.37     0.184      7.48 0.00000000119</code></pre>
+</div>
+</div>
+<p>Según el tipo de regresión que estemos haciendo es el tipo de tabla que regresa <code>tidy</code> (ver <code>?tidy</code>). En particular, por ejemplo, podemos modificar para que devuelva intervalos de confianza al 90%:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Ajusta un modelo lineal </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>modelo_ajustado <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(<span class="at">conf.int =</span> T, <span class="at">conf.level =</span> <span class="fl">0.90</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 7
+  term        estimate std.error statistic       p.value conf.low conf.high
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)     4.27     2.53       1.69 0.0980          0.0260      8.51
+2 PovPct          1.37     0.184      7.48 0.00000000119   1.07        1.68</code></pre>
+</div>
+</div>
+<p>En este caso, el modelo estima que el intercepto (<span class="math inline">\(\beta_0\)</span>) es <span class="math inline">\(4.27\)</span> y la pendiente (<span class="math inline">\(\beta_1\)</span>) es <span class="math inline">\(1.37\)</span>. Como son <em>estimadores</em> del verdadero valor se denotan con <em>gorrito</em>: <span class="math inline">\(\hat\beta_0 = 4.27\)</span> y <span class="math inline">\(\hat\beta_1 = 1.37\)</span>.</p>
+<p>Podemos utilizar la función de <code>predict</code> para que el modelo nos muestre cómo cree que son los verdaderos valores en relación a los ajustados:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Ajusta un modelo lineal </span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>predichos <span class="ot">&lt;-</span> modelo_ajustado <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">new_data =</span> emb_pob)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>intervalo_predichos <span class="ot">&lt;-</span> modelo_ajustado <span class="sc">%&gt;%</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">new_data =</span> emb_pob, <span class="at">type =</span> <span class="st">"pred_int"</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Juntamos los predichos con los observados</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>obs_y_modelo <span class="ot">&lt;-</span> emb_pob <span class="sc">%&gt;%</span> </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(predichos) <span class="sc">%&gt;%</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(intervalo_predichos)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#Graficamos</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(obs_y_modelo) <span class="sc">+</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> PovPct, <span class="at">ymin =</span> .pred_lower, <span class="at">ymax =</span> .pred_upper), </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"#003f5c"</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> PovPct, <span class="at">y =</span> Brth15to17), <span class="at">color =</span> <span class="st">"#bc5090"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> PovPct, <span class="at">y =</span> .pred), </span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"#003f5c"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Porcentaje en pobreza"</span>,</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Tasa bruta de natalidad (por cada 1,000 mujeres adolescentes)"</span>,</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Relación entre tasa bruta de natalidad en adolescentes</span><span class="sc">\n</span><span class="st">de 15 a 19 años y porcentaje en pobreza"</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Nada más a ojo no parece que el modelo sea el mejor pues puedes ver que no explica bien la variabilidad (los observados varían mucho respecto al intervalo). La <span class="math inline">\(R^2\)</span>, una métrica que explica cuánto de la varianza captura el modelo tampoco es muy buena:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>resumen_ajuste <span class="ot">&lt;-</span> modelo_ajustado <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#R^2 clásica</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>resumen_ajuste<span class="sc">$</span>r.squared</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.533328</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#R^2 ajustada</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>resumen_ajuste<span class="sc">$</span>adj.r.squared</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.523804</code></pre>
+</div>
+</div>
+<p>Podemos checar las diferentes gráficas de diagnóstico:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(modelo_ajustado, <span class="at">which =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Veamos qué significa cada una de ellas y juguemos un poco con <code>R</code> para irlas modificando.</p>
+<section id="residuales-contra-ajustados" class="level3">
+<h3 class="anchored" data-anchor-id="residuales-contra-ajustados">Residuales contra ajustados</h3>
+<p>Los <strong>residuales</strong> son la diferencia entre el modelo (<span class="math inline">\(\hat{y}\)</span>) y lo real <span class="math inline">\(y\)</span>. En el caso que estábamos trabajando tenemos que con nuestro modelo podemos predecir los valores de <code>Brth15to17</code> a partir del porcentaje en pobreza <code>PovPct</code>. A los valores predichos por el modelo de <code>Brth15to17</code> les ponemos un gorro encima y los llamamos: <span class="math inline">\(\widehat{\text{Brth15to17}}\)</span>. Estos están dados por la siguiente función:</p>
+<p><span class="math display">\[
+\widehat{\text{Brth15to17}} = 4.26 + 1.37 \cdot \text{PovPct}
+\]</span></p>
+<p>por ejemplo para el porcentaje en pobreza de <span class="math inline">\(20.1\)</span> obtendríamos:</p>
+<p><span class="math display">\[
+\widehat{\text{Brth15to17}} = 4.26 + 1.37 \cdot \text{PovPct} = 31.797
+\]</span></p>
+<p>por otro lado el verdadero valor de cuando el <code>PovPct</code> es <span class="math inline">\(20.1\)</span> (estado de <code>Alabama</code>) es <span class="math inline">\(\text{Brth15to17} = 31.5\)</span>. La diferencia entre el verdadero valor (<span class="math inline">\(\text{Brth15to17} = 31.5\)</span>) y el predicho por el modelo (<span class="math inline">\(\widehat{\text{Brth15to17}} = 31.797\)</span>) se conoce como el residual. La idea es que en un modelo bueno no debe haber patrones en los residuales (todos deben de flotar en torno al cero pero no mostrar un patrón).</p>
+<p>Veamoslo en nuestra base:</p>
+<div class="cell">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>obs_y_modelo <span class="ot">&lt;-</span> obs_y_modelo <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">residuales =</span> Brth15to17 <span class="sc">-</span> .pred)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(obs_y_modelo) <span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> .pred, <span class="at">y =</span> residuales), <span class="at">color =</span> <span class="st">"#ff6361"</span>) <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Valores ajustados (predichos)"</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Residuales"</span>,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Residuales vs ajustados"</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="fu">aes</span>(<span class="at">yintercept =</span> <span class="dv">0</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>En esta gráfica el modelo predice mejor rumbo al final que en medio y esto parece estar corroborado por la gráfica del modelo (previa). Nada más para darnos una idea veamos una gráfica de <em>malos</em> residuales y una de <em>buenos</em></p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="escala-locación" class="level3">
+<h3 class="anchored" data-anchor-id="escala-locación">Escala locación</h3>
+<p>Representa la escala locación contra los residuales estandarizados. La idea de la gráfica es ver que la varianza <span class="math inline">\(\sigma^2\)</span> del modelo no cambie conforme cambia la <span class="math inline">\(x\)</span> (propiedad de <em>homoscedasticidad</em>). Para ello graficamos los residuales estandarizados dados por los residuales mismos dividos entre su desviación estándar:</p>
+<p><span class="math display">\[
+r_{\text{Std}} = \frac{\hat{y} - y}{\text{sd}(\hat{y} - y)} = \frac{\text{Residuales}}{\text{sd}\big(\text{Residuales}\big)}
+\]</span></p>
+<p>estos residuales estandarizados los podemos calcular en <code>R</code> como sigue:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>obs_y_modelo <span class="ot">&lt;-</span> obs_y_modelo <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">residuales_std =</span> residuales<span class="sc">/</span><span class="fu">sd</span>(residuales))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Si los graficamos contra los valores ajustados no deberíamos de ver ningún patrón:</p>
+<div class="cell">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(obs_y_modelo) <span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> .pred, <span class="at">y =</span> residuales_std), <span class="at">color =</span> <span class="st">"#ff6361"</span>) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Valores ajustados (predichos)"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Residuales estandarizados"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Escala Locación"</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="fu">aes</span>(<span class="at">yintercept =</span> <span class="dv">0</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Podemos ver cómo se ven estos puntos en el modelo ideal vs en un modelo donde la <span class="math inline">\(\sigma^2\)</span> depende de la <span class="math inline">\(x\)</span>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="normal-cuantil-cuantil" class="level3">
+<h3 class="anchored" data-anchor-id="normal-cuantil-cuantil">Normal cuantil cuantil</h3>
+<p>La segunda gráfica corresponde a una gráfica cuantil cuantil. Esta la utilizamos para verificar la hipótesis de normalidad. En una gráfica cuantil cuantil se grafican los cuantiles de los residuales contra los cuantiles teóricos de la normal. Por ejemplo si la hacemos con sólo 4 puntos se vería algo así:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Podemos armar una gráfica cuantil cuantil con <code>ggplot2</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(obs_y_modelo, <span class="fu">aes</span>(<span class="at">sample =</span> residuales)) <span class="sc">+</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>(<span class="at">color =</span> <span class="st">"#ff6361"</span>) <span class="sc">+</span> </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>(<span class="at">color =</span> <span class="st">"#58508d"</span>) <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Cuantiles teóricos de la normal"</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Cuantiles observados de los residuales"</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Gráfica qq"</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>La idea de la gráfica cuantil cuantil es que los puntos sigan la línea lo más posible. Veamos cómo se ve con los datos bien (y los mal)</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="residuales-contra-apalancamiento" class="level3">
+<h3 class="anchored" data-anchor-id="residuales-contra-apalancamiento">Residuales contra apalancamiento</h3>
+<p>El apalancamiento representa qué tanto cambia el modelo al quitar una sola observación. Para poner un ejemplo considera los siguientes datos donde hay un valor atípico y selecciono dos puntos de interés en dos colores:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Veamos cómo cambia la regresión si dejo todos los puntos, si quito el normal y si quito el influyente:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Nota que el modelo no cambia prácticamente nada cuando hago la regresión sin el dato que marqué como <code>normal</code> pero cambia mucho cuando quito el que marqué como <code>influyente</code>. La gráfica de residuales contra apalancamiento muestra también el valor extraño:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>El apalancamiento mide la influencia de un dato y en <code>R</code> se puede calcular con <code>hatvalues</code>. Los datos con mayor <strong>apalancamiento</strong> siempre valen la pena checarlos para verificar que todo opera en orden.</p>
+<div class="cell">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>apalancamiento <span class="ot">&lt;-</span> modelo_ajustado <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hatvalues</span>()</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>obs_y_modelo <span class="ot">&lt;-</span> obs_y_modelo <span class="sc">%&gt;%</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(apalancamiento)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#Graficamos residuales contra apalancamiento</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(obs_y_modelo) <span class="sc">+</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> apalancamiento, <span class="at">y =</span> residuales), <span class="at">color =</span> <span class="st">"#ff6361"</span>) <span class="sc">+</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Apalancamiento"</span>,</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Residuales"</span>,</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Residuales vs ajustados"</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="fu">aes</span>(<span class="at">yintercept =</span> <span class="dv">0</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="distancia-de-cook" class="level3">
+<h3 class="anchored" data-anchor-id="distancia-de-cook">Distancia de Cook</h3>
+<p>La distancia de Cook es un concepto similar al apalancamiento que identifica observaciones influyentes. Aquellos valores con distancia de Cook alta vale la pena revisar. En <code>R</code> podemos usar <code>cooks.distance</code> para calcular la distancia de Cook.</p>
+<div class="cell">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>distanciaCook <span class="ot">&lt;-</span> modelo_ajustado <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cooks.distance</span>()</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>obs_y_modelo <span class="ot">&lt;-</span> obs_y_modelo <span class="sc">%&gt;%</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(distanciaCook)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">#Graficamos residuales contra apalancamiento</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(obs_y_modelo) <span class="sc">+</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(obs_y_modelo), <span class="at">y =</span> distanciaCook), <span class="at">fill =</span> <span class="st">"#ff6361"</span>) <span class="sc">+</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Observación (número de entrada en la base)"</span>,</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Distancia de Cook"</span>,</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distancia de Cook"</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>podemos ver que en el ejemplo anterior (el de la observación influyente) la distancia de Cook es exagerada, tan exagerada que ni se alcanzan a ver los otros:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="ejercicios" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicios">Ejercicios</h2>
+<ol type="1">
+<li>Corre el siguiente código para generar una base de datos de nombre <code>datLong</code> que contiene <span class="math inline">\(4\)</span> grupos. Para cada grupo genere una regresión lineal de la forma:</li>
+</ol>
+<p><span class="math display">\[
+y = \beta_0 + \beta_1 x
+\]</span></p>
+<p>Identifica cuáles regresiones sí ajustan bien y cuáles no mediante los gráficos de diagnóstico. Finalmente grafica tus datos <span class="math inline">\(x\)</span> contra <span class="math inline">\(y\)</span> y la regresión para ver que lo hayas hecho bien. ¿Hay alguna forma de corregir alguna de las que no ajusta bien?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> datasets<span class="sc">::</span>anscombe</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>datLong <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">grupo  =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">each =</span> <span class="dv">11</span>),</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">unlist</span>(dat[,<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)]),</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">unlist</span>(dat[,<span class="fu">c</span>(<span class="dv">5</span><span class="sc">:</span><span class="dv">8</span>)])</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(datLong) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="2" type="1">
+<li><p>Lee la base de datos de <span class="math inline">\(n = 345\)</span> niños entre <span class="math inline">\(6\)</span> y <span class="math inline">\(10\)</span> años de <a href="https://online.stat.psu.edu/stat462/sites/onlinecourses.science.psu.edu.stat462/files/data/fev_dat/index.txt">Kahn, Michael (2005)</a>. Las variables de interés son <span class="math inline">\(y = \text{FEV}\)</span> el volumen de expiración forzada y <span class="math inline">\(x = \text{edad}\)</span> en años. Realiza una regresión lineal. Justifica que no se cumple la homocedasticidad mediante una gráfica de escala locación.</p></li>
+<li><p>Plantee una regresión lineal usando <a href="https://data.princeton.edu/wws509/datasets/#salary">los datos de esta liga</a> para determinar si el sexo influye en el salario. <strong>Ojo</strong> en la regresión es necesario incluir otras covariables.</p></li>
+</ol>
+</section>
+<section id="y-si-lo-hacemos-bayesiano" class="level2">
+<h2 class="anchored" data-anchor-id="y-si-lo-hacemos-bayesiano">¿Y si lo hacemos bayesiano?</h2>
+<p>Para hacer la misma regresión lineal pero con estadística bayesiana podemos nada más cambiar el <code>engine</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Ajusta un modelo lineal </span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Brth15to17 = intercepto + pendiente*PovPct</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>modelo_bayesiano <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"stan"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Brth15to17 <span class="sc">~</span> PovPct, <span class="at">data =</span> emb_pob) <span class="co">#Notación y ~ x</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Y podemos ver el ajuste:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>modelo_bayesiano <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Model Info:
+ function:     stan_glm
+ family:       gaussian [identity]
+ formula:      Brth15to17 ~ PovPct
+ algorithm:    sampling
+ sample:       4000 (posterior sample size)
+ priors:       see help('prior_summary')
+ observations: 51
+ predictors:   2
+
+Estimates:
+              mean   sd   10%   50%   90%
+(Intercept) 4.3    2.6  0.9   4.3   7.6  
+PovPct      1.4    0.2  1.1   1.4   1.6  
+sigma       5.6    0.6  5.0   5.6   6.4  
+
+Fit Diagnostics:
+           mean   sd   10%   50%   90%
+mean_PPD 22.3    1.1 20.8  22.3  23.7 
+
+The mean_ppd is the sample average posterior predictive distribution of the outcome variable (for details see help('summary.stanreg')).
+
+MCMC diagnostics
+              mcse Rhat n_eff
+(Intercept)   0.0  1.0  3485 
+PovPct        0.0  1.0  3441 
+sigma         0.0  1.0  3547 
+mean_PPD      0.0  1.0  3977 
+log-posterior 0.0  1.0  1709 
+
+For each parameter, mcse is Monte Carlo standard error, n_eff is a crude measure of effective sample size, and Rhat is the potential scale reduction factor on split chains (at convergence Rhat=1).</code></pre>
+</div>
+</div>
+<p>o realizar predicciones:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>predichos <span class="ot">&lt;-</span> modelo_bayesiano <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">new_data =</span> emb_pob)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>ic <span class="ot">&lt;-</span> modelo_bayesiano <span class="sc">%&gt;%</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predictive_interval</span>(<span class="at">newdata =</span> emb_pob, <span class="at">prob =</span> <span class="fl">0.95</span>) <span class="co">#Para bayesiana</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Juntamos los predichos con los observados</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>obs_y_modelo <span class="ot">&lt;-</span> emb_pob <span class="sc">%&gt;%</span> </span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(predichos) <span class="sc">%&gt;%</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(ic)</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="co">#Graficamos</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(obs_y_modelo) <span class="sc">+</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">x =</span> PovPct, <span class="at">ymin =</span> <span class="st">`</span><span class="at">2.5%</span><span class="st">`</span>, <span class="at">ymax =</span> <span class="st">`</span><span class="at">97.5%</span><span class="st">`</span>), </span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"#003f5c"</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> PovPct, <span class="at">y =</span> Brth15to17), <span class="at">color =</span> <span class="st">"#ffa600"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> PovPct, <span class="at">y =</span> predichos), </span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"#003f5c"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Porcentaje en pobreza"</span>,</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Tasa bruta de natalidad (por cada 1,000 mujeres adolescentes)"</span>,</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Relación entre tasa bruta de natalidad en adolescentes</span><span class="sc">\n</span><span class="st">de 15 a 19 años y porcentaje en pobreza"</span></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Para validación del modelo puedes checar <a href="https://mc-stan.org/rstanarm/articles/rstanarm.html#step-3-criticize-the-model-1">esta página</a> que explica <code>loo</code> (<a href="https://arxiv.org/abs/1507.04544">ver paper</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>modelo_bayesiano <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">loo</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Computed from 4000 by 51 log-likelihood matrix
+
+         Estimate  SE
+elpd_loo   -161.6 4.2
+p_loo         2.4 0.5
+looic       323.2 8.4
+------
+Monte Carlo SE of elpd_loo is 0.0.
+
+All Pareto k estimates are good (k &lt; 0.5).
+See help('pareto-k-diagnostic') for details.</code></pre>
+</div>
+</div>
+<p>asi como su visualización (si el modelo no fuera bueno)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>modelo_bayesiano <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">loo</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="at">label_points =</span> <span class="cn">TRUE</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="ejercicio" class="level2">
+<h2 class="anchored" data-anchor-id="ejercicio">Ejercicio</h2>
+<ol type="1">
+<li>Utilice las opciones de <code>engine</code> para cambiar el <code>prior_intercept</code> del intercepto a una <code>t</code> de Student y el <code>prior</code> de los coeficientes a una <code>Laplace</code>. ¿Cambia mucho el resultado?</li>
+</ol>
+</section>
+</section>
+<section id="sistema" class="level1">
+<h1>Sistema</h1>
+<div class="cell">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.2.1 (2022-06-23)
+ os       macOS Big Sur ... 10.16
+ system   x86_64, darwin17.0
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       America/Mexico_City
+ date     2022-11-06
+ pandoc   2.19.2 @ /Applications/RStudio.app/Contents/MacOS/quarto/bin/tools/ (via rmarkdown)
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ ! package       * version    date (UTC) lib source
+ P assertthat      0.2.1      2019-03-21 [?] CRAN (R 4.2.0)
+ P backports       1.4.1      2021-12-13 [?] CRAN (R 4.2.0)
+ P base64enc       0.1-3      2015-07-28 [?] CRAN (R 4.2.0)
+ P bayesplot       1.9.0      2022-03-10 [?] CRAN (R 4.2.0)
+ P bit             4.0.4      2020-08-04 [?] CRAN (R 4.2.0)
+ P bit64           4.0.5      2020-08-30 [?] CRAN (R 4.2.0)
+ P boot            1.3-28     2021-05-03 [?] CRAN (R 4.2.1)
+ P broom         * 1.0.1      2022-08-29 [?] CRAN (R 4.2.0)
+ P cachem          1.0.6      2021-08-19 [?] CRAN (R 4.2.0)
+ P callr           3.7.2      2022-08-22 [?] CRAN (R 4.2.0)
+ P cellranger      1.1.0      2016-07-27 [?] CRAN (R 4.2.0)
+ P class           7.3-20     2022-01-16 [?] CRAN (R 4.2.1)
+ P cli             3.4.1      2022-09-23 [?] CRAN (R 4.2.0)
+ P codetools       0.2-18     2020-11-04 [?] CRAN (R 4.2.1)
+ P colorspace      2.0-3      2022-02-21 [?] CRAN (R 4.2.0)
+ P colourpicker    1.2.0      2022-10-28 [?] CRAN (R 4.2.0)
+ P conflicted      1.1.0      2021-11-26 [?] CRAN (R 4.2.0)
+ P cowplot       * 1.1.1      2020-12-30 [?] CRAN (R 4.2.0)
+ P crayon          1.5.2      2022-09-29 [?] CRAN (R 4.2.0)
+ P crosstalk       1.2.0      2021-11-04 [?] CRAN (R 4.2.0)
+ P curl            4.3.3      2022-10-06 [?] CRAN (R 4.2.1)
+ P DBI             1.1.3      2022-06-18 [?] CRAN (R 4.2.0)
+ P dbplyr          2.2.1      2022-06-27 [?] CRAN (R 4.2.0)
+ P dials         * 1.1.0      2022-11-04 [?] CRAN (R 4.2.1)
+ P DiceDesign      1.9        2021-02-13 [?] CRAN (R 4.2.0)
+ P digest          0.6.29     2021-12-01 [?] CRAN (R 4.2.0)
+ P dplyr         * 1.0.10     2022-09-01 [?] CRAN (R 4.2.0)
+ P DT              0.26       2022-10-19 [?] CRAN (R 4.2.0)
+ P dygraphs        1.1.1.6    2018-07-11 [?] CRAN (R 4.2.0)
+ P ellipsis        0.3.2      2021-04-29 [?] CRAN (R 4.2.0)
+ P evaluate        0.16       2022-08-09 [?] CRAN (R 4.2.0)
+ P fansi           1.0.3      2022-03-24 [?] CRAN (R 4.2.0)
+ P farver          2.1.1      2022-07-06 [?] CRAN (R 4.2.0)
+ P fastmap         1.1.0      2021-01-25 [?] CRAN (R 4.2.0)
+ P forcats       * 0.5.2      2022-08-19 [?] CRAN (R 4.2.0)
+ P foreach         1.5.2      2022-02-02 [?] CRAN (R 4.2.0)
+ P fs              1.5.2      2021-12-08 [?] CRAN (R 4.2.0)
+ P furrr           0.3.1      2022-08-15 [?] CRAN (R 4.2.0)
+ P future          1.28.0     2022-09-02 [?] CRAN (R 4.2.0)
+ P future.apply    1.10.0     2022-11-05 [?] CRAN (R 4.2.1)
+ P gargle          1.2.1      2022-09-08 [?] CRAN (R 4.2.0)
+ P generics        0.1.3      2022-07-05 [?] CRAN (R 4.2.0)
+ P ggfortify     * 0.4.14     2022-01-03 [?] CRAN (R 4.2.0)
+ P ggplot2       * 3.3.6      2022-05-03 [?] CRAN (R 4.2.0)
+ P ggridges      * 0.5.4      2022-09-26 [?] CRAN (R 4.2.0)
+ P globals         0.16.1     2022-08-28 [?] CRAN (R 4.2.0)
+ P glue            1.6.2      2022-02-24 [?] CRAN (R 4.2.0)
+ P googledrive     2.0.0      2021-07-08 [?] CRAN (R 4.2.0)
+ P googlesheets4   1.0.1      2022-08-13 [?] CRAN (R 4.2.0)
+ P gower           1.0.0      2022-02-03 [?] CRAN (R 4.2.0)
+ P GPfit           1.0-8      2019-02-08 [?] CRAN (R 4.2.0)
+ P gridExtra       2.3        2017-09-09 [?] CRAN (R 4.2.0)
+ P gtable          0.3.1      2022-09-01 [?] CRAN (R 4.2.0)
+ P gtools          3.9.3      2022-07-11 [?] CRAN (R 4.2.0)
+ P hardhat         1.2.0      2022-06-30 [?] CRAN (R 4.2.0)
+ P haven           2.5.1      2022-08-22 [?] CRAN (R 4.2.0)
+ P hms             1.1.2      2022-08-19 [?] CRAN (R 4.2.0)
+ P htmltools       0.5.3      2022-07-18 [?] CRAN (R 4.2.0)
+ P htmlwidgets     1.5.4      2021-09-08 [?] CRAN (R 4.2.0)
+ P httpuv          1.6.6      2022-09-08 [?] CRAN (R 4.2.0)
+ P httr            1.4.4      2022-08-17 [?] CRAN (R 4.2.0)
+ P igraph          1.3.5      2022-09-22 [?] CRAN (R 4.2.0)
+ P infer         * 1.0.3      2022-08-22 [?] CRAN (R 4.2.0)
+ P inline          0.3.19     2021-05-31 [?] CRAN (R 4.2.0)
+ P ipred           0.9-13     2022-06-02 [?] CRAN (R 4.2.0)
+ P iterators       1.0.14     2022-02-05 [?] CRAN (R 4.2.0)
+ P jsonlite        1.8.2      2022-10-02 [?] CRAN (R 4.2.0)
+ P knitr           1.40       2022-08-24 [?] CRAN (R 4.2.0)
+ P labeling        0.4.2      2020-10-20 [?] CRAN (R 4.2.0)
+ P later           1.3.0      2021-08-18 [?] CRAN (R 4.2.0)
+ P lattice         0.20-45    2021-09-22 [?] CRAN (R 4.2.1)
+ P lava            1.7.0      2022-10-25 [?] CRAN (R 4.2.0)
+ P lhs             1.1.5      2022-03-22 [?] CRAN (R 4.2.0)
+ P lifecycle       1.0.3      2022-10-07 [?] CRAN (R 4.2.1)
+ P listenv         0.8.0      2019-12-05 [?] CRAN (R 4.2.0)
+ P lme4            1.1-31     2022-11-01 [?] CRAN (R 4.2.0)
+ P loo             2.5.1      2022-03-24 [?] CRAN (R 4.2.0)
+ P lubridate       1.8.0      2021-10-07 [?] CRAN (R 4.2.0)
+ P magrittr        2.0.3      2022-03-30 [?] CRAN (R 4.2.0)
+ P markdown        1.1        2019-08-07 [?] CRAN (R 4.2.0)
+ P MASS            7.3-58.1   2022-08-03 [?] CRAN (R 4.2.0)
+ P Matrix          1.5-1      2022-09-13 [?] CRAN (R 4.2.0)
+ P matrixStats     0.62.0     2022-04-19 [?] CRAN (R 4.2.0)
+ P memoise         2.0.1      2021-11-26 [?] CRAN (R 4.2.0)
+ P mgcv            1.8-41     2022-10-21 [?] CRAN (R 4.2.0)
+ P mime            0.12       2021-09-28 [?] CRAN (R 4.2.0)
+ P miniUI          0.1.1.1    2018-05-18 [?] CRAN (R 4.2.0)
+ P minqa           1.2.5      2022-10-19 [?] CRAN (R 4.2.0)
+ P modeldata     * 1.0.1      2022-09-06 [?] CRAN (R 4.2.0)
+ P modelr          0.1.9      2022-08-19 [?] CRAN (R 4.2.0)
+ P munsell         0.5.0      2018-06-12 [?] CRAN (R 4.2.0)
+ P nlme            3.1-160    2022-10-10 [?] CRAN (R 4.2.1)
+ P nloptr          2.0.3      2022-05-26 [?] CRAN (R 4.2.0)
+ P nnet            7.3-18     2022-09-28 [?] CRAN (R 4.2.0)
+ P parallelly      1.32.1     2022-07-21 [?] CRAN (R 4.2.0)
+ P parsnip       * 1.0.2      2022-10-01 [?] CRAN (R 4.2.0)
+ P pillar          1.8.1      2022-08-19 [?] CRAN (R 4.2.0)
+ P pkgbuild        1.3.1      2021-12-20 [?] CRAN (R 4.2.0)
+ P pkgconfig       2.0.3      2019-09-22 [?] CRAN (R 4.2.0)
+ P plyr            1.8.7      2022-03-24 [?] CRAN (R 4.2.0)
+ P prettyunits     1.1.1      2020-01-24 [?] CRAN (R 4.2.0)
+ P processx        3.7.0      2022-07-07 [?] CRAN (R 4.2.0)
+ P prodlim         2019.11.13 2019-11-17 [?] CRAN (R 4.2.0)
+ P promises        1.2.0.1    2021-02-11 [?] CRAN (R 4.2.0)
+ P ps              1.7.1      2022-06-18 [?] CRAN (R 4.2.0)
+ P purrr         * 0.3.5      2022-10-06 [?] CRAN (R 4.2.1)
+ P R6              2.5.1      2021-08-19 [?] CRAN (R 4.2.0)
+ P Rcpp          * 1.0.9      2022-07-08 [?] CRAN (R 4.2.0)
+ P RcppParallel    5.1.5      2022-01-05 [?] CRAN (R 4.2.0)
+ P readr         * 2.1.3      2022-10-01 [?] CRAN (R 4.2.0)
+ P readxl          1.4.1      2022-08-17 [?] CRAN (R 4.2.0)
+ P recipes       * 1.0.2      2022-10-16 [?] CRAN (R 4.2.0)
+   renv            0.16.0     2022-09-29 [1] CRAN (R 4.2.0)
+ P reprex          2.0.2      2022-08-17 [?] CRAN (R 4.2.0)
+ P reshape2        1.4.4      2020-04-09 [?] CRAN (R 4.2.0)
+ P rlang           1.0.6      2022-09-24 [?] CRAN (R 4.2.0)
+ P rmarkdown       2.16       2022-08-24 [?] CRAN (R 4.2.0)
+ P rpart           4.1.19     2022-10-21 [?] CRAN (R 4.2.0)
+ P rsample       * 1.1.0      2022-08-08 [?] CRAN (R 4.2.0)
+ P rstan           2.21.7     2022-09-08 [?] CRAN (R 4.2.0)
+ P rstanarm      * 2.21.3     2022-04-09 [?] CRAN (R 4.2.0)
+ P rstantools      2.2.0      2022-04-08 [?] CRAN (R 4.2.0)
+ P rstudioapi      0.14       2022-08-22 [?] CRAN (R 4.2.0)
+ P rvest           1.0.3      2022-08-19 [?] CRAN (R 4.2.0)
+ P scales        * 1.2.1      2022-08-20 [?] CRAN (R 4.2.0)
+ P sessioninfo     1.2.2      2021-12-06 [?] CRAN (R 4.2.0)
+ P shiny           1.7.3      2022-10-25 [?] CRAN (R 4.2.0)
+ P shinyjs         2.1.0      2021-12-23 [?] CRAN (R 4.2.0)
+ P shinystan       2.6.0      2022-03-03 [?] CRAN (R 4.2.0)
+ P shinythemes     1.2.0      2021-01-25 [?] CRAN (R 4.2.0)
+ P StanHeaders     2.21.0-7   2020-12-17 [?] CRAN (R 4.2.0)
+ P stringi         1.7.8      2022-07-11 [?] CRAN (R 4.2.0)
+ P stringr       * 1.4.1      2022-08-20 [?] CRAN (R 4.2.0)
+ P survival        3.4-0      2022-08-09 [?] CRAN (R 4.2.0)
+ P threejs         0.3.3      2020-01-21 [?] CRAN (R 4.2.0)
+ P tibble        * 3.1.8      2022-07-22 [?] CRAN (R 4.2.0)
+ P tidymodels    * 1.0.0      2022-07-13 [?] CRAN (R 4.2.0)
+ P tidyr         * 1.2.1      2022-09-08 [?] CRAN (R 4.2.0)
+ P tidyselect      1.2.0      2022-10-10 [?] CRAN (R 4.2.0)
+ P tidyverse     * 1.3.2      2022-07-18 [?] CRAN (R 4.2.0)
+ P timeDate        4021.106   2022-09-30 [?] CRAN (R 4.2.0)
+ P tune          * 1.0.1      2022-10-09 [?] CRAN (R 4.2.0)
+ P tzdb            0.3.0      2022-03-28 [?] CRAN (R 4.2.0)
+ P utf8            1.2.2      2021-07-24 [?] CRAN (R 4.2.0)
+ P vctrs           0.4.2      2022-09-29 [?] CRAN (R 4.2.0)
+ P vroom           1.6.0      2022-09-30 [?] CRAN (R 4.2.0)
+ P withr           2.5.0      2022-03-03 [?] CRAN (R 4.2.0)
+ P workflows     * 1.1.0      2022-09-26 [?] CRAN (R 4.2.0)
+ P workflowsets  * 1.0.0      2022-07-12 [?] CRAN (R 4.2.0)
+ P xfun            0.33       2022-09-12 [?] CRAN (R 4.2.0)
+ P xml2            1.3.3      2021-11-30 [?] CRAN (R 4.2.0)
+ P xtable          1.8-4      2019-04-21 [?] CRAN (R 4.2.0)
+ P xts             0.12.2     2022-10-16 [?] CRAN (R 4.2.0)
+ P yaml            2.3.5      2022-02-21 [?] CRAN (R 4.2.0)
+ P yardstick     * 1.1.0      2022-09-07 [?] CRAN (R 4.2.0)
+ P zoo             1.8-11     2022-09-17 [?] CRAN (R 4.2.0)
+
+ [1] /Users/rod/Dropbox/Statisticat/renv/library/R-4.2/x86_64-apple-darwin17.0
+ [2] /Users/rod/Dropbox/Statisticat/renv/sandbox/R-4.2/x86_64-apple-darwin17.0/84ba8b13
+
+ P ── Loaded and on-disk path mismatch.
+
+──────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<div>
+<hr>
+
+<h3> Stay in touch / Mantente en contacto </h3>
+<p> If you liked this post, subscribe to avoid missing future ones.</p>
+<p> Si te gustó esta entrada, suscríbete para no perderte ninguna.</p>
+<div class="form-group">
+  <form style="padding:3px;text-align:center;" action="https://tinyletter.com/RodZepeda" method="post" target="popupwindow" onsubmit="window.open('https://tinyletter.com/RodZepeda', 'popupwindow', 'scrollbars=yes,width=800,height=600');return true">
+    <fieldset>
+    <div class="form-group">
+    <label for="tlemail">Subscribe:</label>
+    <input type="text" class="form-control form-control-sm" name="email" id="tlemail" placeholder="name@email.com">
+    <input type="hidden" value="1" name="embed">
+    </div>
+    <div class="form-group">
+    <button type="submit" class="btn btn-primary btn-sm mt-2">Suscribe</button>
+    </div>
+    </fieldset>
+  </form>
+</div>
+
+
+<hr>
+</div>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiada");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="RodrigoZepeda/StatisticatsComments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
