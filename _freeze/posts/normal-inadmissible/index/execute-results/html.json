@@ -1,0 +1,16 @@
+{
+  "hash": "9431d2339eb63a9bc2467937e37483ec",
+  "result": {
+    "markdown": "---\ntitle: \"Don't use the sample mean if $m > 3$!\"\nsubtitle: \"Estimating the mean of a multivariate Gaussian using the sample mean is inadmissible\"\ndate: \"2022-11-17\"\ncategories: [R, Gaussian distribution / distribución gaussiana, multivariate estimation / estimación multivariada, admissibility / admisibilidad, frequentist statistics / estadística frecuentista, James–Stein estimator / estimador de James–Stein]\nimage: \"normal2.png\"\nbibliography: references.bib\nlang: en\ndraft: true\nabstract: \"In this entry we discuss the James–Stein estimator of the mean of a multivariate Gaussian and show that it has a better mean squared error than the sample mean thus rendering the sample mean as an inadmissible estimator.\"\ncrossref:\n  eq-prefix: equation\nformat:\n  html:\n    code-fold: true\n---\n\n\n![3D image of a bivariate gaussian distribution](normal2.png){fig-alt=\"Bivariate gaussian distribution\" fig-align=\"center\"}\n\n\n::: {.cell}\n\n:::\n\n\n### The dimension problem\n\nFor a gaussian distribution, the classical estimator for the mean - the sample mean $\\bar{x}$ - is the \"best\" estimator of $\\mu$ [@casella2021statistical].[^1] \n\n[^1]: It is the minimum-variance unbiased estimator (MVUE) but that's beside the point.\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-2-1.png){width=672}\n:::\n:::\n\n\n\n### \n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

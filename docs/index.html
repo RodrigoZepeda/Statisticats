@@ -70,9 +70,9 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-date','listing-title','listing-author','listing-subtitle','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+      searchColumns: ["listing-date","listing-title","listing-author","listing-subtitle","listing-image","listing-description","listing-categories"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -157,7 +157,7 @@ ul.task-list li input[type="checkbox"] {
         
 </div></div>
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(1)</span></div><div class="category" data-category="diagnóstico de modelos / model diagnosis">diagnóstico de modelos / model diagnosis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="español / Spanish">español / Spanish <span class="quarto-category-count">(1)</span></div><div class="category" data-category="regresiones / regression">regresiones / regression <span class="quarto-category-count">(1)</span></div><div class="category" data-category="regresión lineal / linear regression">regresión lineal / linear regression <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Navidad / Christmas">Navidad / Christmas <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(2)</span></div><div class="category" data-category="diagnóstico de modelos / model diagnosis">diagnóstico de modelos / model diagnosis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="español / Spanish">español / Spanish <span class="quarto-category-count">(1)</span></div><div class="category" data-category="gráficas / plots">gráficas / plots <span class="quarto-category-count">(1)</span></div><div class="category" data-category="rayrender">rayrender <span class="quarto-category-count">(1)</span></div><div class="category" data-category="regresiones / regression">regresiones / regression <span class="quarto-category-count">(1)</span></div><div class="category" data-category="regresión lineal / linear regression">regresión lineal / linear regression <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content column-page-left" id="quarto-document-content">
 
@@ -199,7 +199,51 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="regresiones / regression,regresión lineal / linear regression,R,español / Spanish,diagnóstico de modelos / model diagnosis" data-listing-date-sort="1667714400000" data-listing-file-modified-sort="1667761969607" data-listing-reading-time-sort="29.445">
+<div class="quarto-post image-right" data-index="0" data-categories="R,rayrender,Navidad / Christmas,gráficas / plots" data-listing-date-sort="1671688800000" data-listing-file-modified-sort="1671750287896" data-listing-reading-time-sort="21.235">
+<div class="thumbnail">
+<p><a href="./posts/Navidad/index.html"> <img src="./posts/Navidad/arbolito_navidad_2022_en.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/Navidad/index.html">
+<h3 class="no-anchor listing-title">
+Navidad/Christmas @ #rstats
+</h3>
+<div class="listing-subtitle">
+Intro to/a <code>rayrender</code>
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('rayrender'); return false;">
+rayrender
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Navidad / Christmas'); return false;">
+Navidad / Christmas
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('gráficas / plots'); return false;">
+gráficas / plots
+</div>
+</div>
+<a href="./posts/Navidad/index.html">
+<div class="listing-description">
+<p>En esta entrada discutimos cómo hacer un arbolito de Navidad con <span><code>rayrender</code></span>. In this entry we discuss how to build a Christmas tree with <span><code>rayrender</code></span></p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/Navidad/index.html">
+<div class="listing-date">
+Dec 22, 2022
+</div>
+<div class="listing-author">
+Rodrigo Zepeda-Tello
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="regresiones / regression,regresión lineal / linear regression,R,español / Spanish,diagnóstico de modelos / model diagnosis" data-listing-date-sort="1667714400000" data-listing-file-modified-sort="1667761969607" data-listing-reading-time-sort="29.445">
 <div class="thumbnail">
 <p><a href="./posts/regresiones-1/index.html"> <img src="./posts/regresiones-1/quetelet.jpg" class="thumnail-image"> </a></p>
 </div>

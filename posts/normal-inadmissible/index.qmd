@@ -1,0 +1,122 @@
+---
+title: "Don't use the sample mean if $m > 3$!"
+subtitle: "Estimating the mean of a multivariate Gaussian using the sample mean is inadmissible"
+date: "2022-11-17"
+categories: [R, Gaussian distribution / distribución gaussiana, multivariate estimation / estimación multivariada, admissibility / admisibilidad, frequentist statistics / estadística frecuentista, James–Stein estimator / estimador de James–Stein]
+image: "normal2.png"
+bibliography: references.bib
+lang: en
+draft: true
+abstract: "In this entry we discuss the James–Stein estimator of the mean of a multivariate Gaussian and show that it has a better mean squared error than the sample mean thus rendering the sample mean as an inadmissible estimator."
+crossref:
+  eq-prefix: equation
+format:
+  html:
+    code-fold: true
+---
+
+![3D image of a bivariate gaussian distribution](normal2.png){fig-alt="Bivariate gaussian distribution" fig-align="center"}
+
+```{r}
+#| echo: false
+#| message: false
+pacman::p_load(tidyverse, rayshader, mnormt, reshape2, wesanderson, MASS, clusterGeneration, cowplot, HDShOP)
+set.seed(468252)
+
+#Plot of normal in rayshader
+#make this example reproducible
+render_figure <- FALSE
+
+#create bivariate normal distribution
+if (render_figure){
+  x     <- seq(-2.0, 2.0, 0.1) 
+  y     <- seq(-2.0, 2.0, 0.1)
+  mu    <- c(0, 0)
+  sigma <- matrix(c(0.2, -0.1, -0.1, 0.2), nrow=2)
+  f     <- function(x, y) dmnorm(cbind(x, y), mu, sigma)
+  z     <- outer(x, y, f)
+  
+  ggnormal <- z %>% 
+    melt() %>%
+    ggplot() +
+    geom_tile(aes(x = Var1, y = Var2, fill = value, color = value)) +
+    scale_x_continuous("X", expand = c(0, 0)) +
+    scale_y_continuous("Y", expand = c(0, 0)) +
+    scale_fill_gradientn("Z", colours = wes_palette("Zissou1")) +
+    coord_fixed() +
+    theme(legend.position = "none")
+  
+  plot_gg(ggnormal, multicore = TRUE, raytrace = TRUE, width = 7, height = 4,  scale = 300, windowsize = c(1400, 866), zoom = 0.6, phi = 30, theta = 30) 
+  render_snapshot(filename = "normal2.png", clear = TRUE)
+
+}
+```
+
+### The dimension problem
+
+For a gaussian distribution, the classical estimator for the mean - the sample mean $\bar{x}$ - is the "best" estimator of $\mu$ [@casella2021statistical].[^1] It is unbiased, consistent, efficient, 
+
+
+[^1]: It is the minimum-variance unbiased estimator (MVUE) but that's beside the point.
+
+```{r}
+#| echo: false
+#| message: false
+mdims  <- 4
+cormat <- rcorrmatrix(mdims)
+sims   <- mvrnorm(40, mu = rep(0, mdims), Sigma = cormat)
+sample_st <- mean_js(t(sims), Y_0 = 0.0)$means
+sample    <- colMeans(sims)
+for (sim in 2:100){
+  sims <- mvrnorm(40, mu = rep(0, mdims), Sigma = cormat)
+  sample <- sample |>
+    rbind(colMeans(sims))
+  sample_st <- sample_st |>
+    rbind(mean_js(t(sims), Y_0 = 0.0)$means)
+}
+sample    <- as_tibble(sample, .name_repair = "unique")
+sample_st <- as_tibble(sample_st, .name_repair = "unique")
+colnames(sample)    <- paste0("X",as.character(1:mdims))
+colnames(sample_st) <- paste0("X",as.character(1:mdims))
+sample$estimator    <- "Sample mean"
+sample_st$estimator <- "James–Stein"
+plot_list <- list()
+k <- 0
+cols <- wes_palette("Zissou1", n = 6, type = "continuous")
+
+
+for (i in 1:mdims){
+  for (j in i:mdims){
+    if (j != i){
+      k <- k + 1
+      plot_list[[k]] <- ggplot() +
+        geom_point(aes_string(x = paste0("X",i), y =  paste0("X",j),
+                              color = "estimator"),
+                   data = sample, alpha = 0.5) +
+        geom_point(aes_string(x = paste0("X",i), y =  paste0("X",j),
+                              color = "estimator"),
+                   data = sample_st, alpha = 0.5) +
+        geom_hline(aes(yintercept = 0), linetype = "dashed", color = cols[1]) +
+        geom_vline(aes(xintercept = 0), linetype = "dashed", color = cols[1]) +
+        geom_point(aes(x = 0, y = 0), size = 3, color = cols[1]) +
+        geom_point(aes(x = 0, y = 0), size = 2, color = "white") +
+        theme_classic() +
+        scale_color_manual("Estimator", values = cols[c(1,4)]) +
+        theme(
+          legend.position = "none"
+        )
+    }   
+  }
+}
+
+plot_grid(plotlist = plot_list, ncol = mdims - 1)
+
+```
+
+### Geometrical explanation
+
+### Bayesian connection
+
+### But...
+
+

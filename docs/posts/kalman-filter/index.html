@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.1.251">
@@ -7,9 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Rodrigo Zepeda-Tello">
-<meta name="dcterms.date" content="2022-10-08">
 
-<title>Statisticats 🐱 - The Kalman Filter</title>
+<title>Statisticats 🐱 - El filtro de Kalman 1 (introducción)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -85,6 +84,25 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 
@@ -112,15 +130,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   "type": "overlay",
   "limit": 20,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-no-results-text": "Sín resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la busqueda",
+    "search-hide-matches-text": "Esconder resultados adicionales",
+    "search-more-match-text": "hay más resultados en este documento",
+    "search-more-matches-text": "más resultados en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Eviar"
   }
 }</script>
 
@@ -173,25 +191,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
-<p>subscribe.html</p>
-</div></div>
+<div class="form-group">
+  <form style="padding:3px;text-align:center;" action="https://tinyletter.com/RodZepeda" method="post" target="popupwindow" onsubmit="window.open('https://tinyletter.com/RodZepeda', 'popupwindow', 'scrollbars=yes,width=800,height=600');return true">
+    <fieldset>
+    <div class="form-group">
+    <label for="tlemail">Subscribe:</label>
+    <input type="text" class="form-control form-control-sm" name="email" id="tlemail" placeholder="name@email.com">
+    <input type="hidden" value="1" name="embed">
+    </div>
+    <div class="form-group">
+    <button type="submit" class="btn btn-primary btn-sm mt-2">Suscribe</button>
+    </div>
+    </fieldset>
+  </form>
+</div>
+
         
+</div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#mínimos-cuadrados" id="toc-mínimos-cuadrados" class="nav-link active" data-scroll-target="#mínimos-cuadrados">Mínimos cuadrados</a></li>
+  <li><a href="#mínimos-cuadrados-recursivos" id="toc-mínimos-cuadrados-recursivos" class="nav-link" data-scroll-target="#mínimos-cuadrados-recursivos">Mínimos cuadrados recursivos</a></li>
+  <li><a href="#el-filtro-de-kalman" id="toc-el-filtro-de-kalman" class="nav-link" data-scroll-target="#el-filtro-de-kalman">El filtro de Kalman</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">The Kalman Filter</h1>
+<h1 class="title">El filtro de Kalman 1 (introducción)</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">state space models</div>
-    <div class="quarto-category">Kalman filter</div>
-    <div class="quarto-category">smoothing</div>
-    <div class="quarto-category">statistics</div>
-    <div class="quarto-category">linear models</div>
-    <div class="quarto-category">gaussian</div>
-    <div class="quarto-category">bayesian statistics</div>
-    <div class="quarto-category">bayes</div>
+    <div class="quarto-category">state space models / modelos de espacios de estados</div>
+    <div class="quarto-category">Kalman filter / filtro de Kalman</div>
+    <div class="quarto-category">smoothing /suavizamiento</div>
+    <div class="quarto-category">statistics / estadística</div>
+    <div class="quarto-category">linear models / modelos lineales</div>
+    <div class="quarto-category">mínimos cuadrados recursivos / recursive least squares</div>
+    <div class="quarto-category">python</div>
   </div>
   </div>
 
@@ -200,41 +240,169 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="quarto-title-meta">
 
     <div>
-    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-heading">Autor</div>
     <div class="quarto-title-meta-contents">
              <p>Rodrigo Zepeda-Tello </p>
           </div>
   </div>
     
     <div>
-    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-heading">Fecha de Publicación</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 8, 2022</p>
+      <p class="date">12 de noviembre de 2022</p>
     </div>
   </div>
     
   </div>
   
+<div>
+  <div class="abstract">
+    <div class="abstract-title">Resumen</div>
+    En esta entrada discutimos la idea que inspiró al filtro de Kalman. Empezamos con mínimos cuadrados, pasamos a mínimos cuadrados recursivos y finalmente al planteamiento y solución del filtro de Kalman clásico.
+  </div>
+</div>
 
 </header>
 
-<p>Hola</p>
+<div class="quarto-figure quarto-figure-center page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="filter.jpg" class="img-fluid figure-img" alt="Fotografía de un filtro polarizado para cámara fotográfica tipo reflex y el estuche del filtro en color blanco."></p>
+<p></p><figcaption class="figure-caption margin-caption">Dmitry Makeev, CC BY-SA 4.0 <a href="https://creativecommons.org/licenses/by-sa/4.0" class="uri">https://creativecommons.org/licenses/by-sa/4.0</a>, via Wikimedia Commons</figcaption><p></p>
+</figure>
+</div>
+<section id="mínimos-cuadrados" class="level2">
+<h2 class="anchored" data-anchor-id="mínimos-cuadrados">Mínimos cuadrados</h2>
+<p>El problema clásico de regresión consiste en estimar <span class="math inline">\(\mathbf{\beta} = (\beta_1, \beta_2, \dots, \beta_p)^{\intercal}\)</span> dadas <span class="math inline">\(n\)</span> observaciones <span class="math inline">\(\mathbf{x}_t = (x_{1,t}, \dots, x_{p,t})^{\intercal}\)</span> (<span class="math inline">\(t = 1, \dots,n)\)</span> y <span class="math inline">\(\mathbf{y}_t = (y_1, \dots, y_t)^{\intercal}\)</span> las cuales están relacionadas de la siguiente forma:</p>
 <p><span class="math display">\[
-x^2
+y_t = \sum_{i = 1}^{p}  x_{i,t}\beta_i + \epsilon_t = \mathbf{x}_t^{\intercal} \mathbf{\beta} + \epsilon_t
+\]</span> donde los términos de error <span class="math inline">\(\{\epsilon_t\}_{t=1}^n\)</span> son variables aleatorias independientes con media cero y varianza <span class="math inline">\(\sigma^2 &lt; \infty\)</span>.</p>
+<p>Una de las formas clásicas de estimación es minimizando la suma de cuadrados de los errores de estimación dada por:</p>
+<p><span class="math display">\[
+S(\mathbf{\beta}) = \sum_{t=1}^n \big(y_t - \mathbf{x}_t^{\intercal}\mathbf{\beta}  \big)^2
+\]</span> La cual puede escribirse de manera matricial como la minimización de la norma-2: <span id="eq-sumsq"><span class="math display">\[
+S(\beta) = (\mathbf{y} - \mathbf{X} \mathbf{\beta})^{\intercal}(\mathbf{y} - \mathbf{X} \mathbf{\beta}) = \|\mathbf{y} - \mathbf{X} \mathbf{\beta}\|^2_2
+\tag{1}\]</span></span></p>
+<p>con <span class="math inline">\(\mathbf{X} = \big(\mathbf{x}_1|\mathbf{x}_2|\dots|\mathbf{x}_n\big)^{\intercal}\)</span> y <span class="math inline">\(\mathbf{\epsilon} = (\epsilon_1, \dots, \epsilon_n)^{\intercal}\)</span>.</p>
+<p>Si la matriz <span class="math inline">\(\mathbf{X}\)</span> es de rango completo, la solución al sistema es la proyección ortogonal:</p>
+<p><span class="math display">\[
+\hat\beta=(\mathbf{X}^{\intercal}\mathbf{X})^{-1}\mathbf{X}^{\intercal}y = \left(\sum\limits_{t=1}^n \mathbf{x}_t \mathbf{x}_t^{\intercal} \right)^{-1} \sum_{t=1}^n\mathbf{x}_t \mathbf{y}_t
 \]</span></p>
-<div class="cell">
+<p>Y el resultado es la línea (hiperplano) que minimiza los errores:</p>
+<div class="cell" data-execution_count="1">
 <details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">+</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sns.<span class="bu">set</span>(rc<span class="op">=</span>{<span class="st">'text.usetex'</span> : <span class="va">True</span>})</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>sns.set_theme(style<span class="op">=</span><span class="st">"white"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#Simulamos datos</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">28802574</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>x       <span class="op">=</span> np.linspace(<span class="dv">0</span>,<span class="dv">10</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> np.random.normal(loc<span class="op">=</span><span class="fl">0.0</span>, scale<span class="op">=</span><span class="fl">2.5</span>, size<span class="op">=</span><span class="bu">len</span>(x))</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>y_true  <span class="op">=</span> <span class="dv">3</span><span class="op">*</span>x <span class="op">+</span> <span class="dv">15</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>y_obs   <span class="op">=</span> y_true <span class="op">+</span> epsilon</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#Agregamos una columna de 1's a las X para el intercepto</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>x_extended <span class="op">=</span> sm.add_constant(x)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#Obtenemos modelo de regresión</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> sm.OLS(y_obs, x_extended)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#Ajustamos modelo</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model.fit()</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">#Predecimos</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> results.predict()</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">#Gráfica</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>f, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">4.5</span>))</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>f.suptitle(<span class="st">'Estimación por mínimos cuadrados'</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>sns.despine(f, left<span class="op">=</span><span class="va">True</span>, bottom<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(x<span class="op">=</span>x, y<span class="op">=</span>y_obs, color<span class="op">=</span><span class="st">"#497174"</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>sns.lineplot(x<span class="op">=</span>x, y<span class="op">=</span>y_pred, color<span class="op">=</span><span class="st">'#EB6440'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="vs">r'$y = \beta_0 + \beta_1 x$'</span>)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="vs">r'$x$'</span>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="vs">r'$y$'</span>)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-2-output-1.png" class="" width="661" height="440"></p>
 </div>
 </div>
+</section>
+<section id="mínimos-cuadrados-recursivos" class="level2">
+<h2 class="anchored" data-anchor-id="mínimos-cuadrados-recursivos">Mínimos cuadrados recursivos</h2>
+<p>Si imaginamos un escenario donde los datos llegan de manera ordenada (como en una serie de tiempo) <span class="math inline">\(\mathbf{x}_1, \mathbf{x}_2, \dots\)</span> podemos pensar en generar distintos estimadores de <span class="math inline">\(\beta\)</span> dados por la colección <span class="math inline">\(\{\hat{\beta}_i\}_{i=1}^n\)</span> generados conforme se observan más <span class="math inline">\(\mathbf{x}\)</span>. Es decir, el primer estimador de <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\hat{\beta}_1\)</span>, se estimaría sólo con <span class="math inline">\(y_1\)</span> y <span class="math inline">\(\mathbf{x}_1\)</span> mientras que un estimador al tiempo <span class="math inline">\(t\)</span>, <span class="math inline">\(\hat{\beta}_t\)</span>, se generaría con las primeras <span class="math inline">\(t\)</span> observaciones: <span class="math inline">\(y_1, \dots, y_t\)</span> y <span class="math inline">\(\mathbf{x}_1, \dots, \mathbf{x}_t\)</span>.</p>
+<p>Las betas se pueden estimar recursivamente pues su diferencia es una matriz que sólo depende del término más reciente (ver <span class="citation" data-cites="triantafyllopoulos2021bayesian">Triantafyllopoulos (<a href="#ref-triantafyllopoulos2021bayesian" role="doc-biblioref">2021</a>)</span> para su obtención) como:</p>
+<p><span class="math display">\[
+\hat\beta_t = \hat\beta_{t-1} + K_t e_t
+\]</span> donde <span class="math inline">\(K_t = \Big(\sum_{i=0}^{t-1} \mathbf{x}_{t-i} \mathbf{x}_{t-1}^{\intercal}\Big)^{-1} \mathbf{x}_t\)</span> y <span class="math inline">\(e_t = (\mathbf{y}_t - \mathbf{x}_t^{\intercal} \hat{\mathbf{\beta}}_{t-1})\)</span>.</p>
+<p>Podemos generalizar ésta idea de estimación secuencial decidiendo agregar un factor de descuento <span class="math inline">\(\delta\in(0,1]\)</span>. De esta manera para la suma de cuadrados <em>pesaría</em> más la información reciente:</p>
+<p><span class="math display">\[
+S(\mathbf{\beta}) = \sum_{t=1}^n \delta^{n-i}\big(y_t - \mathbf{x}_t^{\intercal}\mathbf{\beta}  \big)^2
+\]</span></p>
+<p>Ésta misma suma se puede reescribir como una minimización clásica de cuadrados considerando <span class="math inline">\(\tilde{\mathbf{X}}_t= \big(\delta^{(t-1)/2}\mathbf{x}_1|\delta^{(t-2)/2}\mathbf{x}_2|\dots|\delta^{0}\mathbf{x}_t\big)^{\intercal}\)</span> y <span class="math inline">\(\tilde{\mathbf{y}}_t = (\delta^{(t-1)/2}y_1, \dots, \delta^{0}y_t)^{\intercal}\)</span> en <a href="#eq-sumsq">la ecuación&nbsp;1</a>. El estimador <span class="math inline">\(\hat\beta_t\)</span> de <span class="math inline">\(\beta\)</span> al momento <span class="math inline">\(t\)</span> está dado por:</p>
+<p><span class="math display">\[
+\hat{\beta}_t = (\tilde{\mathbf{X}_t}^{\intercal}\tilde{\mathbf{X}_t})^{-1}\tilde{\mathbf{X}_t}^{\intercal}\tilde{y}_t
+\]</span> En el siguiente gráfico podemos ver cómo varía la estimación de <span class="math inline">\(\beta\)</span> dada por <span class="math inline">\(\hat{\beta}_t\)</span> conforme avanza <span class="math inline">\(t\)</span>:</p>
+<div class="cell" data-execution_count="2">
+<details>
+<summary>Código</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Obtenemos modelo de regresión</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> sm.RecursiveLS(y_obs, x_extended)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Ajustamos modelo</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> model.fit()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Predecimos</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> results.predict()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#Obtenemos los coeficientes</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>beta0 <span class="op">=</span> results.recursive_coefficients.filtered[<span class="dv">0</span>]</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>beta1 <span class="op">=</span> results.recursive_coefficients.filtered[<span class="dv">1</span>]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>time  <span class="op">=</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(x))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#Gráfica</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>f, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>,<span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="fl">4.5</span>))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>f.suptitle(<span class="st">'Estimación por mínimos cuadrados recursivos'</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>sns.despine(f, left<span class="op">=</span><span class="va">True</span>, bottom<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>sns.lineplot(ax<span class="op">=</span>ax[<span class="dv">0</span>], x<span class="op">=</span>time, y<span class="op">=</span>beta0, color<span class="op">=</span><span class="st">'#497174'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_title(<span class="vs">r'Intercepto ($\beta_0$)'</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_xlabel(<span class="vs">r'$t$'</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_ylabel(<span class="vs">r'$\beta_0$'</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>sns.lineplot(ax<span class="op">=</span>ax[<span class="dv">1</span>], x<span class="op">=</span>time, y<span class="op">=</span>beta1, color<span class="op">=</span><span class="st">'#EB6440'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_title(<span class="vs">r'Pendiente ($\beta_1$)'</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_xlabel(<span class="vs">r'$t$'</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_ylabel(<span class="vs">r'$\beta_1$'</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(ax<span class="op">=</span>ax[<span class="dv">2</span>], x<span class="op">=</span>x, y<span class="op">=</span>y_obs, color<span class="op">=</span><span class="st">"#497174"</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>sns.lineplot(ax<span class="op">=</span>ax[<span class="dv">2</span>], x<span class="op">=</span>x, y<span class="op">=</span>y_pred, color<span class="op">=</span><span class="st">'#EB6440'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">2</span>].set_title(<span class="vs">r'$y = \beta_0 + \beta_1 x$'</span>)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">2</span>].set_xlabel(<span class="vs">r'$x$'</span>)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">2</span>].set_ylabel(<span class="vs">r'$y$'</span>)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-3-output-1.png" class="" width="673" height="440"></p>
+</div>
+</div>
+</section>
+<section id="el-filtro-de-kalman" class="level2">
 
 
 
-</main> <!-- /main -->
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">El filtro de Kalman</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-triantafyllopoulos2021bayesian" class="csl-entry" role="doc-biblioentry">
+Triantafyllopoulos, Kostas. 2021. <em>Bayesian Inference of State Space Models: Kalman Filtering and Beyond</em>. Springer Nature.
+</div>
+</div></section></div></main> <!-- /main -->
 <div>
 <hr>
 
@@ -299,7 +467,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
+    button.setAttribute("title", "Copiada");
     setTimeout(function() {
       button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
