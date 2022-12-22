@@ -346,7 +346,7 @@ png("arbolito.png")
 render_scene(scene, 
              width = 500,    #Ancho en pixeles
              height = 500,   #Alto en pixeles
-             samples = 2500, #Suficientes muestras!
+             samples = 1000, #Suficientes muestras!
              preview = F, 
              parallel = T,
              lookfrom = c(50.10, 7.25, 60.13), 
@@ -388,7 +388,7 @@ drawplot <- ggdraw() +
   geom_text(aes(x = 0.5, y = 0.1, label = "Feliz Navidad"), color = "white",
             family = "pconflict", size = 15) +
   geom_text(aes(x = 0.5, y = 0.95,
-                label = "@RodZepeda | rodrigozepeda.github.io/Statisticats/Navidad"),
+                label = "@RodZepeda | rodrigozepeda.github.io/Statisticats/posts/Navidad"),
             color = "gray75",
             size = 3) 
 ggsave("arbolito_navidad_2022_es.png", drawplot, dpi = 100, width = 500, height = 500, units = "px")  
@@ -639,7 +639,7 @@ png("arbolito.png")
 render_scene(scene, 
              width = 500,    #Pixel width
              height = 500,   #Pixel height
-             samples = 2500, #Enough samples
+             samples = 1000, #Enough samples
              preview = F, 
              parallel = T,
              lookfrom = c(50.10, 7.25, 60.13), 
@@ -681,7 +681,7 @@ drawplot <- ggdraw() +
   geom_text(aes(x = 0.5, y = 0.1, label = "Merry Christmas"), color = "white",
             family = "pconflict", size = 15) +
   geom_text(aes(x = 0.5, y = 0.95,
-                label = "@RodZepeda | rodrigozepeda.github.io/Statisticats/Navidad"),
+                label = "@RodZepeda | rodrigozepeda.github.io/Statisticats/posts/Navidad"),
             color = "gray75",
             size = 3) 
 ggsave("arbolito_navidad_2022_en.png", drawplot, dpi = 100, width = 500, height = 500, units = "px")  
