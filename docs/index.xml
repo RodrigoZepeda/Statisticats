@@ -10,7 +10,196 @@
 <atom:link href="https://rodrigozepeda.github.io/Statisticats/index.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.1.251</generator>
-<lastBuildDate>Thu, 22 Dec 2022 06:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 27 Dec 2022 06:00:00 GMT</lastBuildDate>
+<item>
+  <title>FasteR functions with memoise</title>
+  <dc:creator>Rodrigo Zepeda-Tello</dc:creator>
+  <link>https://rodrigozepeda.github.io/Statisticats/posts/memoise/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<section id="hey-stop-calling-me" class="level2">
+<h2 class="anchored" data-anchor-id="hey-stop-calling-me">Hey, stop calling me!</h2>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<p>Memoisation is a technique for speeding up functions via <em>memorization</em> of previously calculated results. To better explain the idea let’s consider a recursive formulation of the Fibonacci sequence:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Af(n)%20=%20f(n-%201)%20+%20f(n-2)%0A"></p>
+<p>with <img src="https://latex.codecogs.com/png.latex?f(1)%20=%201%20=%20f(2)">. <sup>1</sup></p>
+<p>An implementation of the function is given by:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">fibonacci <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(n){</span>
+<span id="cb1-2">  <span class="cf" style="color: #003B4F;">if</span>(n <span class="sc" style="color: #5E5E5E;">&lt;=</span> <span class="dv" style="color: #AD0000;">2</span>){</span>
+<span id="cb1-3">    <span class="fu" style="color: #4758AB;">return</span>(<span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb1-4">  } <span class="cf" style="color: #003B4F;">else</span> {</span>
+<span id="cb1-5">    <span class="fu" style="color: #4758AB;">return</span>(</span>
+<span id="cb1-6">      <span class="fu" style="color: #4758AB;">fibonacci</span>(n <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">1</span>) <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">fibonacci</span>(n <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">2</span>)</span>
+<span id="cb1-7">    )</span>
+<span id="cb1-8">  }</span>
+<span id="cb1-9">}</span></code></pre></div>
+</div>
+<p>We can calculate the time it takes to estimate the number up to <code>20</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">microbenchmark<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">microbenchmark</span>(<span class="fu" style="color: #4758AB;">fibonacci</span>(<span class="dv" style="color: #AD0000;">20</span>))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+          expr      min       lq    mean   median       uq      max neval
+ fibonacci(20) 4.633172 5.810971 6.92568 6.418399 7.803796 17.74069   100</code></pre>
+</div>
+</div>
+<p>Larger values (like <code>fibonacci(100)</code>) start taking <em>a lot of time</em>. And that’s because <code>fibonacci(100)</code> estimates the same values several times! To illustrate this point, consider <code>fibonacci(5)</code>. You can see that <code>fibonacci(3)</code> is estimated twice: once under <code>fibonacci(5)</code> itself and one under <code>fibonacci(4)</code>. This is extremely inefficient!</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<p>
+</p><pre class="mermaid" data-tooltip-selector="#mermaid-tooltip-1">graph TD
+    f5[fibonacci 5] --&gt; f4[fibonacci 4]
+    f5[fibonacci 5] --&gt; f3[fibonacci 3]
+    f3 --&gt; f13[fibonacci 1]
+    f3 --&gt; f23[fibonacci 2]
+    f4 --&gt; f32[fibonacci 3]
+    f4 --&gt; f2[fibonacci 2]
+    f32 --&gt; f21[fibonacci 2]
+    f32 --&gt; f11[fibonacci 1]
+</pre>
+<div id="mermaid-tooltip-1" class="mermaidTooltip">
+
+</div>
+<p></p>
+</div>
+</div>
+</div>
+<p>We can calculate how many times the function <code>fibonacci</code> is called when estimating different numbers. In theory it should scale linearly <em>i.e.</em> <code>fibonacci(20)</code> should only calculate <code>fibonacci(1)</code>, <code>fibonacci(2)</code>, etc up to <code>fibonacci(19)</code> <em>once</em>. Hence the function should be called at most 20 times. However this isn’t the case:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">calls_f   <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">0</span></span>
+<span id="cb4-2">fibonacci_calls <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(n){</span>
+<span id="cb4-3">  calls_f <span class="ot" style="color: #003B4F;">&lt;&lt;-</span> calls_f <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">1</span></span>
+<span id="cb4-4">  <span class="cf" style="color: #003B4F;">if</span>(n <span class="sc" style="color: #5E5E5E;">&lt;=</span> <span class="dv" style="color: #AD0000;">2</span>){</span>
+<span id="cb4-5">    <span class="fu" style="color: #4758AB;">return</span>(<span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb4-6">  } <span class="cf" style="color: #003B4F;">else</span> {</span>
+<span id="cb4-7">    <span class="fu" style="color: #4758AB;">return</span>(</span>
+<span id="cb4-8">      <span class="fu" style="color: #4758AB;">fibonacci_calls</span>(n <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">1</span>) <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">fibonacci_calls</span>(n <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">2</span>)</span>
+<span id="cb4-9">    )</span>
+<span id="cb4-10">  }</span>
+<span id="cb4-11">}</span>
+<span id="cb4-12"><span class="fu" style="color: #4758AB;">invisible</span>(<span class="fu" style="color: #4758AB;">fibonacci_calls</span>(<span class="dv" style="color: #AD0000;">20</span>))</span>
+<span id="cb4-13"></span>
+<span id="cb4-14"><span class="fu" style="color: #4758AB;">cat</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"fibonacci_calls was called"</span>,calls_f,<span class="st" style="color: #20794D;">"times"</span>))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>fibonacci_calls was called 13529 times</code></pre>
+</div>
+</div>
+<p>The algorithm is extremely inefficient because it doesn’t remember when estimating <code>fibonacci_calls(8)</code> that it already has estimated <code>fibonacci_calls(7)</code> during its estimation of <code>fibonacci_calls(9)</code>. Memoisation is a solution for this forgetfulness.</p>
+</section>
+<section id="sec-hard-coded" class="level2">
+<h2 class="anchored" data-anchor-id="sec-hard-coded">Hard coded memoisation</h2>
+<p>As we have seen, <code>fibonacci(20)</code> calls the <code>fibonacci</code> function 13,529 times. This inefficiency could be saved if the function could <em>memorize</em> that it has already calculated the previous results. That is the utility of the memoisation trick. To save these memorizations (memoise!), let’s create a global vector where we’ll keep the previous results of the <code>fibonacci</code> function. That is, the <code>j</code>-th entry of our vector will correspond to <code>fibonacci(j)</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;">#Fibonacci cache vector up til fibonacci 1000 </span></span>
+<span id="cb6-2"><span class="co" style="color: #5E5E5E;">#fibonacci_cache[j] = fibonacci(j)</span></span>
+<span id="cb6-3">fibonacci_cache <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="cn" style="color: #8f5902;">NA</span>, <span class="dv" style="color: #AD0000;">1000</span>)</span>
+<span id="cb6-4"></span>
+<span id="cb6-5"><span class="co" style="color: #5E5E5E;">#fibonacci_cache[1] = fibonacci(1) and fibonacci_cache[2] = fibonacci(2) </span></span>
+<span id="cb6-6">fibonacci_cache[<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">2</span>] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb6-7"></span>
+<span id="cb6-8">memoised_fibonacci <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(n){</span>
+<span id="cb6-9">  <span class="co" style="color: #5E5E5E;">#Only calculate the values we haven't previously estimated</span></span>
+<span id="cb6-10">  <span class="cf" style="color: #003B4F;">if</span> (<span class="fu" style="color: #4758AB;">is.na</span>(fibonacci_cache[n])){</span>
+<span id="cb6-11">    fibonacci_cache[n] <span class="ot" style="color: #003B4F;">&lt;&lt;-</span> <span class="fu" style="color: #4758AB;">memoised_fibonacci</span>(n <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">1</span>) <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">memoised_fibonacci</span>(n <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">2</span>)</span>
+<span id="cb6-12">  } </span>
+<span id="cb6-13">  <span class="fu" style="color: #4758AB;">return</span>(fibonacci_cache[n])</span>
+<span id="cb6-14">}</span></code></pre></div>
+</div>
+<div class="cell">
+
+</div>
+<p>Let’s compare the speed of the previous function with this one:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">microbenchmark<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">microbenchmark</span>(<span class="fu" style="color: #4758AB;">fibonacci</span>(<span class="dv" style="color: #AD0000;">20</span>), <span class="fu" style="color: #4758AB;">memoised_fibonacci</span>(<span class="dv" style="color: #AD0000;">20</span>))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: nanoseconds
+                   expr     min        lq       mean    median      uq     max
+          fibonacci(20) 3942361 4796700.5 5059247.18 4838703.0 4977222 8489579
+ memoised_fibonacci(20)     398     589.5    2730.04    1642.5    3855   28640
+ neval
+   100
+   100</code></pre>
+</div>
+</div>
+<p>This speed-up happens because the <em>new</em> <code>memoised_fibonacci</code> only calculates the value <code>18</code> times! In contrast with the previous 13,529. For any custom function you build you can <code>memoise</code> this way <em>ooooor</em> you can let the <code>memoise</code> package do it for you.</p>
+</section>
+<section id="the-memoise-package" class="level2">
+<h2 class="anchored" data-anchor-id="the-memoise-package">The <code>memoise</code> package</h2>
+<p>The <code>memoise</code> package does exactly what we did in the previous section by automatically memoising functions (with arguments that aren’t necessarily numbers). It sets limits to the memory (our <code>fibonacci_cache</code>) as well as the amount of time a function <em>will remember</em> previous results (time limit). To memoise a function you just need to call <code>memoise</code> over it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;">library</span>(memoise)</span>
+<span id="cb9-2">mfibo <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(n){</span>
+<span id="cb9-3">  <span class="cf" style="color: #003B4F;">if</span>(n <span class="sc" style="color: #5E5E5E;">&lt;=</span> <span class="dv" style="color: #AD0000;">2</span>){</span>
+<span id="cb9-4">    <span class="fu" style="color: #4758AB;">return</span>(<span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb9-5">  } <span class="cf" style="color: #003B4F;">else</span> {</span>
+<span id="cb9-6">    <span class="fu" style="color: #4758AB;">return</span>(</span>
+<span id="cb9-7">      <span class="fu" style="color: #4758AB;">mfibo</span>(n <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">1</span>) <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">mfibo</span>(n <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">2</span>) <span class="co" style="color: #5E5E5E;">#It's important to call this with the memoized name</span></span>
+<span id="cb9-8">    )</span>
+<span id="cb9-9">  }</span>
+<span id="cb9-10">}</span>
+<span id="cb9-11">mfibo <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">memoise</span>(mfibo) <span class="co" style="color: #5E5E5E;">#Memoization line</span></span></code></pre></div>
+</div>
+<div class="cell">
+
+</div>
+<p>Note that this <code>memoisation</code> has additional overhead over the memoisation we did in Section&nbsp;2 because <code>memoise</code> works even for non numeric arguments (which would have failed in our vectorized example). However the speed-up over the original is still there:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">microbenchmark<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">microbenchmark</span>(<span class="fu" style="color: #4758AB;">fibonacci</span>(<span class="dv" style="color: #AD0000;">20</span>), <span class="fu" style="color: #4758AB;">mfibo</span>(<span class="dv" style="color: #AD0000;">20</span>), <span class="fu" style="color: #4758AB;">memoised_fibonacci</span>(<span class="dv" style="color: #AD0000;">20</span>)) </span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: nanoseconds
+                   expr     min        lq       mean  median        uq      max
+          fibonacci(20) 5291457 6031574.5 7138627.87 6599172 7929635.0 14128101
+              mfibo(20)   58632   72422.5  151487.39  139772  190614.5   569502
+ memoised_fibonacci(20)     606    1206.0    5186.56    3470    7506.5    39376
+ neval
+   100
+   100
+   100</code></pre>
+</div>
+</div>
+<p>The <code>memoise</code> package uses <a href="https://cachem.r-lib.org/">cachem</a> which allows for fine control over where the previous results of the function. You can substitute the <code>#Memoization line</code> in the previous code for this memoise with finer control.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="co" style="color: #5E5E5E;">#Set memory to 100MB and time to memorizing only for 15 minutes</span></span>
+<span id="cb12-2">cm    <span class="ot" style="color: #003B4F;">&lt;-</span> cachem<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">cache_mem</span>(<span class="at" style="color: #657422;">max_size =</span> <span class="dv" style="color: #AD0000;">100</span> <span class="sc" style="color: #5E5E5E;">*</span> <span class="dv" style="color: #AD0000;">1024</span><span class="sc" style="color: #5E5E5E;">^</span><span class="dv" style="color: #AD0000;">2</span>, <span class="at" style="color: #657422;">max_age =</span> <span class="dv" style="color: #AD0000;">15</span> <span class="sc" style="color: #5E5E5E;">*</span> <span class="dv" style="color: #AD0000;">60</span>)</span>
+<span id="cb12-3">mfibo <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">memoise</span>(mfibo, <span class="at" style="color: #657422;">cache =</span> cm)</span></code></pre></div>
+</div>
+<p>To keep previous computations across different R sessions you can cache directly to disk (slower) instead of memory:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">cm    <span class="ot" style="color: #003B4F;">&lt;-</span> cachem<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">cache_disk</span>(<span class="at" style="color: #657422;">max_size =</span> <span class="dv" style="color: #AD0000;">100</span> <span class="sc" style="color: #5E5E5E;">*</span> <span class="dv" style="color: #AD0000;">1024</span><span class="sc" style="color: #5E5E5E;">^</span><span class="dv" style="color: #AD0000;">2</span>, <span class="at" style="color: #657422;">max_age =</span> <span class="dv" style="color: #AD0000;">15</span> <span class="sc" style="color: #5E5E5E;">*</span> <span class="dv" style="color: #AD0000;">60</span>)</span>
+<span id="cb13-2">mfibo <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">memoise</span>(mfibo, <span class="at" style="color: #657422;">cache =</span> cm)</span></code></pre></div>
+</div>
+</section>
+<section id="and-in-other-languages" class="level2">
+<h2 class="anchored" data-anchor-id="and-in-other-languages">And in other languages?</h2>
+<p>You can also memoise in <a href="https://docs.python.org/3/library/functools.html#functools.cache">the most recent versions of Python</a> either vie the built in <code>functools</code> or the <a href="https://github.com/lonelyenvoy/python-memoization"><code>memoization</code> project</a>. In <a href="https://github.com/JuliaCollections/Memoize.jl">Julia you can Memoize.jl</a>. Let me know if you are interested in an entry for any of these.</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Some definitions start with <img src="https://latex.codecogs.com/png.latex?f(0)"> but as <code>R</code> indexes vectors in <img src="https://latex.codecogs.com/png.latex?1"> we’d better start with <img src="https://latex.codecogs.com/png.latex?1">.↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>R</category>
+  <category>memoise</category>
+  <category>Advanced R / R avanzado</category>
+  <category>programming tips / tips de programación</category>
+  <guid>https://rodrigozepeda.github.io/Statisticats/posts/memoise/index.html</guid>
+  <pubDate>Tue, 27 Dec 2022 06:00:00 GMT</pubDate>
+  <media:content url="https://rodrigozepeda.github.io/Statisticats/posts/memoise/memoise.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
 <item>
   <title>Navidad/Christmas @ #rstats</title>
   <dc:creator>Rodrigo Zepeda-Tello</dc:creator>

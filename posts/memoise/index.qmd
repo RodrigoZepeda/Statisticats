@@ -1,0 +1,192 @@
+---
+title: "Faste`R` functions with `memoise`"
+date: "2022-12-27"
+categories: [R, memoise, Advanced R / R avanzado, programming tips / tips de programación]
+image: "memoise.png"
+lang: en
+draft: false
+abstract: "In this entry I discuss how to speed up recursive R functions with the memory-trick of `memoise`."
+crossref:
+  eq-prefix: equation
+format:
+  html:
+    fig-align: center
+    code-fold: false
+---
+
+## Hey, stop calling me!
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+pacman::p_load(microbenchmark, memoise, ggplot2, flextable)
+```
+
+```{r}
+#| echo: false
+plot_memoise <- ggplot() +
+  annotate("text", x = 0, y = 0, label = "f(x)", vjust = 0, size = 10, color = "deepskyblue4") +
+  annotate("text", x = 0.1, y = 0, label = "f(y)", vjust = 0, size = 10, color = "tomato3") +
+  annotate("text", x = 0.2, y = 0, label = "f(x)", vjust = 0, size = 10, color = "deepskyblue4") + 
+  geom_curve(
+    aes(x = 0, y = -0.001, xend = 0.2, yend = -0.001),
+    arrow = arrow(length = unit(0.05, "npc")),
+    size = 2,
+    color = "deepskyblue3"
+  ) +
+  theme_void() +
+  ylim(c(-0.02, 0.02)) +
+  xlim(c(-0.1, 0.3))
+ggsave("memoise.png", plot_memoise, width = 5, height = 5, dpi = 250, bg = "white")
+```
+
+Memoisation is a technique for speeding up functions via *memorization* of previously calculated results. To better explain the idea let's consider a recursive formulation of the Fibonacci sequence: 
+
+$$
+f(n) = f(n- 1) + f(n-2)
+$$
+
+with $f(1) = 1 = f(2)$. [^1]
+
+[^1]: Some definitions start with $f(0)$ but as `R` indexes vectors in $1$ we'd better start with $1$.
+
+An implementation of the function is given by:
+
+```{r}
+fibonacci <- function(n){
+  if(n <= 2){
+    return(1)
+  } else {
+    return(
+      fibonacci(n - 1) + fibonacci(n - 2)
+    )
+  }
+}
+```
+
+We can calculate the time it takes to estimate the number up to `20`:
+
+```{r}
+microbenchmark::microbenchmark(fibonacci(20))
+```
+Larger values (like `fibonacci(100)`) start taking _a lot of time_. And that's because `fibonacci(100)` estimates the same values several times! To illustrate this point, consider `fibonacci(5)`. You can see that `fibonacci(3)` is estimated twice: once under `fibonacci(5)` itself and one under `fibonacci(4)`. This is extremely inefficient!
+
+```{mermaid}
+graph TD
+    f5[fibonacci 5] --> f4[fibonacci 4]
+    f5[fibonacci 5] --> f3[fibonacci 3]
+    f3 --> f13[fibonacci 1]
+    f3 --> f23[fibonacci 2]
+    f4 --> f32[fibonacci 3]
+    f4 --> f2[fibonacci 2]
+    f32 --> f21[fibonacci 2]
+    f32 --> f11[fibonacci 1]
+```
+
+We can calculate how many times the function `fibonacci` is called when estimating different numbers. In theory it should scale linearly _i.e._ `fibonacci(20)` should only calculate `fibonacci(1)`, `fibonacci(2)`, etc up to `fibonacci(19)` _once_. Hence the function should be called at most 20 times. However this isn't the case: 
+
+
+```{r}
+calls_f   <- 0
+fibonacci_calls <- function(n){
+  calls_f <<- calls_f + 1
+  if(n <= 2){
+    return(1)
+  } else {
+    return(
+      fibonacci_calls(n - 1) + fibonacci_calls(n - 2)
+    )
+  }
+}
+invisible(fibonacci_calls(20))
+
+cat(paste("fibonacci_calls was called",calls_f,"times"))
+```
+
+The algorithm is extremely inefficient because it doesn't remember when estimating `fibonacci_calls(8)` that it already has estimated `fibonacci_calls(7)` during its estimation of `fibonacci_calls(9)`. Memoisation is a solution for this forgetfulness. 
+
+## Hard coded memoisation  {#sec-hard-coded}
+
+As we have seen, `fibonacci(20)` calls the `fibonacci` function  `r scales::comma(calls_f)` times. This inefficiency could be saved if the function could _memorize_ that it has already calculated the previous results. That is the utility of the memoisation trick. To save these memorizations (memoise!),  let's create a global vector where we'll keep the previous results of the `fibonacci` function. That is, the `j`-th entry of our vector will correspond to `fibonacci(j)`. 
+
+```{r}
+#Fibonacci cache vector up til fibonacci 1000 
+#fibonacci_cache[j] = fibonacci(j)
+fibonacci_cache <- rep(NA, 1000)
+
+#fibonacci_cache[1] = fibonacci(1) and fibonacci_cache[2] = fibonacci(2) 
+fibonacci_cache[1:2] <- c(1, 1)
+
+memoised_fibonacci <- function(n){
+  #Only calculate the values we haven't previously estimated
+  if (is.na(fibonacci_cache[n])){
+    fibonacci_cache[n] <<- memoised_fibonacci(n - 1) + memoised_fibonacci(n - 2)
+  } 
+  return(fibonacci_cache[n])
+}
+```
+
+```{r}
+#| echo: false
+invisible(memoised_fibonacci(20))
+```
+
+Let's compare the speed of the previous function with this one:
+
+```{r}
+microbenchmark::microbenchmark(fibonacci(20), memoised_fibonacci(20))
+```
+
+This speed-up happens because the _new_ `memoised_fibonacci` only calculates the value `18` times! In contrast with the previous `r scales::comma(calls_f)`. For any custom function you build you can `memoise` this way _ooooor_ you can let the `memoise` package do it for you. 
+
+## The `memoise` package
+
+The `memoise` package does exactly what we did in the previous section by automatically memoising functions (with arguments that aren't necessarily numbers). It sets limits to the memory (our `fibonacci_cache`) as well as the amount of time a function _will remember_ previous results (time limit). To memoise a function you just need to call `memoise` over it:
+
+```{r}
+library(memoise)
+mfibo <- function(n){
+  if(n <= 2){
+    return(1)
+  } else {
+    return(
+      mfibo(n - 1) + mfibo(n - 2) #It's important to call this with the memoized name
+    )
+  }
+}
+mfibo <- memoise(mfibo) #Memoization line
+```
+
+```{r}
+#| echo: false
+invisible(mfibo(20))
+```
+
+Note that this `memoisation` has additional overhead over the memoisation we did in @sec-hard-coded because `memoise` works even for non numeric arguments (which would have failed in our vectorized example). However the speed-up over the original is still there:
+
+```{r}
+microbenchmark::microbenchmark(fibonacci(20), mfibo(20), memoised_fibonacci(20)) 
+```
+
+The `memoise` package uses [cachem](https://cachem.r-lib.org/) which allows for fine control over where the previous results of the function. You can substitute the `#Memoization line` in the previous code for this memoise with finer control. 
+
+```{r}
+#| eval: false
+#Set memory to 100MB and time to memorizing only for 15 minutes
+cm    <- cachem::cache_mem(max_size = 100 * 1024^2, max_age = 15 * 60)
+mfibo <- memoise(mfibo, cache = cm)
+```
+
+To keep previous computations across different R sessions you can cache directly to disk (slower) instead of memory:
+
+```{r}
+#| eval: false
+cm    <- cachem::cache_disk(max_size = 100 * 1024^2, max_age = 15 * 60)
+mfibo <- memoise(mfibo, cache = cm)
+```
+
+## And in other languages?
+
+You can also memoise in [the most recent versions of Python](https://docs.python.org/3/library/functools.html#functools.cache) either vie the built in `functools` or the [`memoization` project](https://github.com/lonelyenvoy/python-memoization). In [Julia you can Memoize.jl](https://github.com/JuliaCollections/Memoize.jl). Let me know if you are interested in an entry for any of these. 
+

@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/memoise/index.html",
       "/posts/Navidad/index.html",
       "/posts/regresiones-1/index.html"
     ]
