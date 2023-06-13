@@ -1,0 +1,9 @@
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+RCall = "6f49c342-dc21-5d91-9882-a32aef131414"
+StateSpaceModels = "99342f36-827c-5390-97c9-d7f9ee765c78"
+Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
+XGBoost = "009559a3-9522-5dbb-924b-0b6ed2b22bb9"

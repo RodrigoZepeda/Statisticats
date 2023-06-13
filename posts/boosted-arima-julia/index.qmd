@@ -1,0 +1,89 @@
+---
+title: "Boosting an ARIMA model in Julia"
+date: "2023-01-05"
+categories: [state space models / modelos de espacios de estados, JuliaLang, ARIMA, Boosting]
+image: "filter.jpg"
+lang: en
+draft: true
+bibliography: references.bib
+abstract: "Here you'll learn how to boost your ARIMA model with Julia."
+crossref:
+  eq-prefix: Eq
+format:
+  html:
+    code-fold: false
+---
+
+# Boosting ARIMA
+
+I first came into contact with boosted ARIMA with the now defunct [boostime](https://github.com/AlbertoAlmuinha/boostime) package in R. The idea was quite simple: time series models are not perfect and the errors (residuals) might not be *completely* white noise. There might be patterns that the model was not able to capture. It is of these gaps that an additional boosting model might take advantage.
+
+The main idea of boosting the ARIMA model is constructing a model which combines both the ARIMA and a boosting algorithm for the residuals:
+
+```
+                        Predictions = ARIMA(data) + BOOST(residuals)
+```
+
+```{r}
+#| message: false
+#| echo: false
+library(JuliaCall)
+Sys.setenv(JULIA_PROJECT="/Users/rod/Dropbox/Statisticat/posts/boosted-arima-julia/")
+JuliaCall::julia_setup("/usr/local/bin/")
+JuliaCall::julia_library("XGBoost")
+```
+
+For the purpose of our model we'll use the `XGBoost.jl` and `StateSpaceModels.jl` packages. 
+
+```{julia}
+using XGBoost, StateSpaceModels, DataFrames, CSV, Plots
+```
+
+One of the default datasets is the Air Passengers dataset (a classic from [Box _et al_](https://www.wiley.com/en-us/Time+Series+Analysis:+Forecasting+and+Control,+5th+Edition-p-9781118675021) !) which contains information of the total amount of passengers in a US airline from 1949 to 1960. 
+
+```{julia}
+#| echo: true
+#| message: false
+#| output: false
+passengers = CSV.read(StateSpaceModels.AIR_PASSENGERS, DataFrame)
+```
+
+The first entries of the `DataFrame` look like this:
+
+```{julia}
+first(passengers, 5)
+```
+
+Now to properly fit the model one should perform [a decomposition](https://otexts.com/fpp2/components.html), check the [PACF](https://en.wikipedia.org/wiki/Partial_autocorrelation_function), etcetera. The purpose of this entry is not to discuss how to do exploratory data analysis for time series modeling. You can check that [elsewhere](https://www.routledge.com/Time-Series-for-Data-Science-Analysis-and-Forecasting/Woodward-Sadler-Robertson/p/book/9780367537944). For now we'll assume that a good `auto-arima` model will consider up to `12` seasons:
+
+```{julia}
+#| message: false
+#| output: false
+#Transform to log scale for better fit
+log_air_passengers = log.(passengers.passengers)
+
+#Fit the 'best' arima (in real life increase max_P, max_Q, etc)
+model = auto_arima(log_air_passengers; seasonal = 12)
+forecast_model = forecast(model, 30) #Predict next 30 months
+```
+
+```{julia}
+#| fig-height: 3.5
+#| fig-width: 8
+#| fig-align: center
+#| fig-cap: "Predicciones del modelo ARIMA clásico"
+#| fig-alt: "Gráfica que muestra una serie de tiempo de pasajeros en aerolíneas junto con la predicción realizada por el modelo ARIMA. Se puede observar que la predicción captura las fluctuaciones mensuales del modelo correctamente y que los intervalos no explotan al infinito en el periodo de análisis"
+#Show the forecast
+Plots.plot(model, forecast_model; title = "Classic ARIMA", label = "")
+```
+
+Now that we've fitted the first part of the model (the `ARIMA` part) we proceed to fit the residuals using `XGBoost`
+
+```{julia}
+#We save as a matrix the predicted values
+model_expected = reduce(vcat,transpose.(forecast_model.expected_value)) 
+
+```
+
+
+

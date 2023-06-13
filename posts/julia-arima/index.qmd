@@ -1,0 +1,18 @@
+---
+title: "Building an AUTO-ARIMA in Julia"
+date: "2023-01-05"
+categories: [state space models / modelos de espacios de estados, JuliaLang, ARIMA, auto arima]
+lang: en
+draft: true
+bibliography: references.bib
+abstract: "Here you'll learn how to build your own AUTO-ARIMA function with Julia."
+crossref:
+  eq-prefix: Eq
+format:
+  html:
+    code-fold: false
+---
+
+# Is this another ARIMA implementation?
+
+Yes. 

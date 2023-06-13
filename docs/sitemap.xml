@@ -2,22 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://rodrigozepeda.github.io/Statisticats/posts/regresiones-1/index.html</loc>
-    <lastmod>2022-12-28T18:29:44.094Z</lastmod>
+    <lastmod>2023-06-13T04:47:30.490Z</lastmod>
   </url>
   <url>
     <loc>https://rodrigozepeda.github.io/Statisticats/posts/Navidad/index.html</loc>
-    <lastmod>2022-12-28T18:29:45.911Z</lastmod>
+    <lastmod>2023-06-13T04:47:31.901Z</lastmod>
+  </url>
+  <url>
+    <loc>https://rodrigozepeda.github.io/Statisticats/posts/bootstraping-a-survey-regression/index.html</loc>
+    <lastmod>2023-06-13T04:47:35.553Z</lastmod>
   </url>
   <url>
     <loc>https://rodrigozepeda.github.io/Statisticats/posts/memoise/index.html</loc>
-    <lastmod>2022-12-28T18:29:51.913Z</lastmod>
+    <lastmod>2023-06-13T04:47:38.239Z</lastmod>
+  </url>
+  <url>
+    <loc>https://rodrigozepeda.github.io/Statisticats/posts/characteristic-function-definetti/index.html</loc>
+    <lastmod>2023-06-13T04:47:38.988Z</lastmod>
   </url>
   <url>
     <loc>https://rodrigozepeda.github.io/Statisticats/index.html</loc>
-    <lastmod>2022-12-28T18:29:53.113Z</lastmod>
+    <lastmod>2023-06-13T04:47:39.981Z</lastmod>
   </url>
   <url>
     <loc>https://rodrigozepeda.github.io/Statisticats/about.html</loc>
-    <lastmod>2022-12-28T18:29:53.894Z</lastmod>
+    <lastmod>2023-06-13T04:47:40.582Z</lastmod>
   </url>
 </urlset>

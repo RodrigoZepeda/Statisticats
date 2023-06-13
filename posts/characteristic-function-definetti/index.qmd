@@ -1,0 +1,292 @@
+---
+title: "An intuitive (geometric) interpretation of the characteristic function of a random variable"
+date: "2023-01-06"
+categories: [probability, random variables, characteristic function, intuitive math]
+image: "barycenter.png"
+lang: en
+draft: false
+abstract: "In this entry I discuss my favourite intuition behind the characteristic function and the inversion theorem in probability."
+bibliography: references.bib
+crossref:
+  eq-prefix: equation
+format:
+  html:
+    fig-align: center
+    code-fold: false
+---
+
+```{r}
+#| echo: false
+#| message: false
+library(tidyverse)
+library(gganimate)
+library(latex2exp)
+render_plots <- FALSE
+```
+
+# The characteristic function
+
+The characteristic function of a random variable $X$ is defined as the Fourier Transform of the variable[^1]:
+
+[^1]: The classical Fourier transform has a $2\pi$ but in probability we assume $t = 2\pi \theta$ for some $\theta$ and forget about $\pi$.
+
+$$
+\phi_X(t) = \mathbb{E}[e^{i t X}]
+$$
+One of the first questions that arise during a probability course is, of course, _what the @&/¬#¢! is that?_ In this post we aim to remedy this and give some physical intuitions behind such a formula. 
+
+# De Finetti's interpretation as a barycentre
+
+Bruno de Finetti in one of his lectures (@de2008philosophical) gives my favourite interpretation. He reminds us that for any $x$, the complex valued function $x \to e^{i x}$, represents a point along the unit circumference. Hence for a discrete random variable $X$ that takes $3$ values: $x_1, x_2, x_3$ with probabilities $p_1, p_2, p_3$, the characteristic function at $1$ is given by the weighted average of three points in the unit circumference:
+
+$$
+\phi_X(1) = \mathbb{E}[e^{iX}] = \sum\limits_{k=1}^3 p_k e^{i x_k}
+$$
+
+We can think of each $x_k$ as pulling the unit disk by $p_k$ in their respective direction (red dots). The center of mass (barycenter) of the unit disc will lie in $\phi_X(1)$ (black triangle):
+
+```{r}
+#| fig-width: 4
+#| fig-height: 4
+#| echo: false
+#| fig-align: center
+if (render_plots){
+  f <- function(x) exp(1i*3*x)
+  z <- c(-1, 0.3, 5)
+  p <- c(0.5, 0.2, 0.3)
+  
+  phip <- sum(f(z)*p)
+  
+  coords <- tibble(x = Re(f(z)), y = Im(f(z)), p = p) |> mutate(num = 1:n())
+  
+  ggplot(coords) +
+    annotate("path", x=cos(seq(0,2*pi,length.out=100)), y=sin(seq(0,2*pi,length.out=100)),
+             size = 1, color = "deepskyblue4") +
+    geom_text(aes(x = 1.15*x, y = 1.15*y, label = TeX(paste0("$x_", num,"$"), output = "character")),
+              parse = T) +
+    geom_point(aes(x = x, y = y, size = 2*p), color = "firebrick") +
+    geom_point(aes(x = x, y = y, size = p), color = "white") +
+    theme_classic() +
+    coord_equal() +
+    geom_segment(aes(x =  Re(phip), y = Im(phip), xend = 0.95*x, yend = 0.95*y), color = "purple",
+                 arrow = arrow(type = "closed", length = unit(0.1, "inches"))) +
+    geom_label(aes(x = (x - Re(phip))/2 + Re(phip), y = (y - Im(phip))/2 + Im(phip), 
+                  label =TeX(paste0("$p_", num,"$"), output = "character")), 
+               color = "purple", parse = T) +
+    geom_point(aes(x = Re(phip), y = Im(phip)), data = NULL, color = "black", size = 5,
+               shape = 17) +
+    geom_point(aes(x = Re(phip), y = Im(phip)), data = NULL, color = "white", size = 2,
+               shape = 17) +
+    theme(legend.position = "none")
+  ggsave("barycentre.svg", width = 4, height = 4)
+}
+
+```
+
+![The barycenter is calculated as if each $x_k$ pulled the center of the disk by $p_k$.](barycentre.svg)
+
+Any rotation by an angle $t$ will move the barycenter accordingly as the points $e^{i t x_k}$ will still lie in the unit circle. The path followed by the barycenter is nothing more than $phi(t)$.
+
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+#| echo: false
+#| fig-align: center
+
+if (render_plots){
+  f <- function(t,z) exp(1i*t*z)
+  z <- c(-1, 0.3, 5)
+  p <- c(0.5, 0.2, 0.3)
+  
+  for (t in seq(-2*pi*prod(c(-1, 0.3, 5)), 2*pi*prod(c(-1, 0.3, 5)), length.out = 500)){
+    coords <- f(t, z)
+    phip   <- sum(coords*p)
+    df     <- tibble(x = Re(coords), y = Im(coords), p = p, 
+                     bar1 = rep(Re(phip),3), bar2 = rep(Im(phip),3), theta = t)  |>
+      mutate(num = 1:n())
+    if (t == -2*pi*prod(c(-1, 0.3, 5))){
+      df_final <- df
+    } else {
+      df_final <- df_final |> bind_rows(df)
+    }
+  }
+  
+  circle_plot <- ggplot(df_final) + 
+    annotate("path", x=cos(seq(0.00,2*pi,length.out=100)), y=sin(seq(0,2*pi,length.out=100)),
+             size = 1, color = "deepskyblue4") +
+    geom_text(aes(x = 1.3*x, y = 1.3*y, 
+                  label = TeX(paste0("$x_", num,"$"), output = "character")),
+                  parse = TRUE) +
+    geom_point(aes(x = x, y = y, size = 2*p), color = "firebrick") +
+    geom_point(aes(x = x, y = y, size = p), color = "white") +
+    annotate("path", x = df_final$bar1, y = df_final$bar2, 
+                 color = "black", alpha = 0.1) +
+    theme_classic() +
+    coord_equal() +
+    geom_segment(aes(x =  bar1, y = bar2, xend = 0.95*x, yend = 0.95*y), color = "purple",
+                 arrow = arrow(type = "closed", length = unit(0.1, "inches"))) +
+    geom_label(aes(x = (x - bar1)/2 + bar1, y = (y - bar2)/2 +bar2, 
+                  label = TeX(paste0("$p_", num,"$"), output = "character")), 
+               color = "purple", parse = TRUE) +
+    geom_point(aes(x = bar1, y = bar2), data = NULL, color = "black", size = 5,
+               shape = 17) +
+    geom_point(aes(x = bar1, y = bar2), data = NULL, color = "white", size = 2,
+               shape = 17) +
+    theme(legend.position = "none") +
+    transition_states(
+      theta,
+      transition_length = 2,
+      state_length = 3
+    ) +
+    enter_fade() + 
+    exit_shrink() +
+    ease_aes('sine-in-out') +
+    labs(title = 't = {closest_state}')
+  animate(circle_plot, renderer = gifski_renderer("circle.gif"), nframes = 250, 
+          height = 4, width = 4, units = "in", res = 750)
+}
+```
+
+![Animation of a the barycentre $\phi(t)$ (black triangle) as $t$ changes. You can see each $x_k$ pulling by $p_k$ the barycenter as $t$ varies.](circle.gif)
+
+Hence the characteristic function can be thought of as a the function that calculates the center of mass resulting from $X$ after each rotation $t$:
+
+$$
+\phi_X(t) = \mathbb{E}[e^{i t X}] = \sum\limits_{k=1}^3 p_k e^{i t x_k}.
+$$
+
+For a continuous random variable we can think of a unit circle with mass all around its circumference. The characteristic function continues to be the center of mass. As the function $t \to \mathbb{E}[e^{i t X}]$ returns the coordinates of the barycenter for each $t$ we can think of the characteristic function as a change of coordinates from "classic" to "barycenters".  Sean Carroll characterizes it this way: [\[the characteristic function\] "is just a fancy change of coordinates"](https://www.preposterousuniverse.com/blog/2014/11/27/thanksgiving-9/).
+
+There are a lot of properties that follow from this interpretation:
+
+1. Existance is given as if $X$ exists then $e^{itX}$ exists and _is bounded_ (see 3). Hence the average $\mathbb{E}[e^{i t X}]$ also exists.  
+
+2. $\phi(0) = 1$ as $e^0$ lies on the circumference at $(1,0)$. 
+
+3. That the function is bounded by one, $|\phi(t)| \leq 1$, follows from its characterization as a path of barycenters inside the unit circle.
+
+4. If $X$ and $Y$ are independent then $\phi_{X,Y}(s,t)$ is a rotation of $X$ by $s$ and of $Y$ by $t$. Their independence ensures that rotating one doesn't rotate the other, hence $\phi_{X,Y}(s,t) = \phi_{X}(s)\phi_{Y}(t)$. 
+
+5. By the same argument, if $X$ and $Y$ are independent, rotating $X$ and $Y$ separately and then adding their masses results in the same barycenter as adding their masses and then rotating the mixture: $\phi_{X + Y}(t) = \phi_{X}(t)\phi_{Y}(t)$. 
+
+We'll see that this intuition also helps us understand the **inversion theorem**.
+
+## A geometric interpretation of the inversion theorem 
+
+The characteristic function $\phi(t)$ corresponds to the path of the barycentre of the circumference as the points around it rotate by $t$. This represents a unique signature[^2]: 
+
+[^2]: And a great mandala to colour!
+
+```{r}
+#| echo: false
+#| fig-width: 4
+#| fig-height: 4
+#| fig-align: center
+if (render_plots){
+  z <- c(-1, 0.3, 5)
+  p <- c(0.5, 0.2, 0.3)
+  phi_t <- function(t){sum(exp(1i*t*z)*p)}
+  
+  pathvals <- c()
+  for (t in seq(-2*pi*prod(c(-1, 0.3, 5)), 2*pi*prod(c(-1, 0.3, 5)), length.out = 500)){
+    pathvals <- c(pathvals, phi_t(t))
+  }
+  
+  tibble(x = Re(pathvals), y = Im(pathvals)) |>
+    ggplot() +
+    geom_path(aes(x = x, y = y)) +
+    annotate("path", x=cos(seq(0,2*pi,length.out=100)), y=sin(seq(0,2*pi,length.out=100)),
+               size = 1, color = "deepskyblue4") +
+    theme_classic() +
+    coord_equal()
+   ggsave("barycentre_path.svg", width = 4, height = 4)
+}
+```
+
+![The path of $\phi(t)$ as reconstructed from the three $x_k$ represents the random variable's unique signature.](barycentre_path.svg)
+
+Before going into the inverse transform there remains a second point of interest. As was seen in the previous animation, a fixed $x_k$ in $e^{itx_k}$ represents the "speed" at which the particle (that pulls the barycenter with weight $p_k$) travels around the circumference. Intuitively if you think of $t$ moving from $-\pi$ to $\pi$, then $x_k = 1$ represents the reference speed for traveling around the circumference. Any $x_k > 1$ will result in a path that goes around faster and travels more than a cycle while $x_k < 1$ will not complete a full cycle in the $[-\pi,\pi]$ period.
+
+Now we can go and interpret the inverse fourier transform. By taking $\phi(t)$ and multiplying it by $e^{-itx_k}$ (for a fixed $x_k$) we project outwards from the barycenter. As the angle $t$ varies from $-\pi$ to $\pi$, the barycenter is pulled by a force $p_x$ that moves at speed $x$ around the circumference. 
+
+
+```{r}
+#| echo: false
+#| fig-width: 4
+#| fig-height: 4
+#| fig-align: center
+if (render_plots){
+  z     <- c(-1, 0.3, 1)
+  p     <- c(0.5, 0.2, 0.3)
+  phi_t <- function(t){sum(exp(1i*t*z)*p)}
+  
+  pathvals <- c()
+  invvals  <- c()
+  for (t in seq(-pi, pi, length.out = 250)){
+    pathvals <- c(pathvals, phi_t(t))
+    invvals  <- c(invvals, exp(-1i*t*z[3]))
+    df       <- tibble(x = Re(phi_t(t)), y = Im( phi_t(t)),
+                       bar1 = Re(exp(-1i*t*z[3])), 
+                       bar2 = Im(exp(-1i*t*z[3])), theta = t) 
+    if (t == -pi){
+      df_final <- df
+    } else {
+      df_final <- df_final |> bind_rows(df)
+    }
+  }
+  hvals <- pathvals*invvals/(2*pi)
+  df_final$fv1 <- Re(hvals)
+  df_final$fv2 <- Im(hvals)
+  
+  
+  circle_plot <- ggplot(df_final |> filter(theta == pi)) + 
+    annotate("path", x=cos(seq(0.00,2*pi,length.out=100)), y=sin(seq(0,2*pi,length.out=100)),
+             size = 1, color = "deepskyblue4") +
+    annotate("path", x=Re(pathvals), y=Im(pathvals),
+             size = 1, color = "black", alpha = 0.2) +
+    annotate("path", x=Re(hvals), y=Im(hvals), size = 1, color = "purple", alpha = 0.2) +
+    geom_text(aes(x = 1.3*bar1, y = 1.3*bar2, 
+                  label = TeX(paste0("e^{-i*t*x}"), output = "character")),
+                  parse = TRUE) +
+    geom_point(aes(x = bar1, y = bar2), size = 5, color = "firebrick") +
+    geom_point(aes(x = bar1, y = bar2), size = 2, color = "white") +
+    geom_point(aes(x = fv1, y = fv2), size = 5, color = "purple") +
+    geom_point(aes(x = fv1, y = fv2), size = 2, color = "white") +
+    theme_classic() +
+    coord_equal(xlim = c(-1.5, 1.5), ylim = c(-1.5, 1.5)) +
+    geom_segment(aes(x =  x, y = y, xend = bar1, yend = bar2), color = "purple") +
+    geom_segment(aes(x =  x, y = y, xend = fv1, yend = fv2), color = "purple") +
+    geom_segment(aes(x =  bar1, y = bar2, xend =  fv1, yend = fv2), color = "purple") +
+    geom_point(aes(x = x, y = y), color = "black", size = 5,
+               shape = 17) +
+    geom_point(aes(x = x, y = y), color = "white", size = 2,
+               shape = 17) +
+    theme(legend.position = "none") +
+    transition_states(
+      theta,
+      transition_length = 2,
+      state_length = 3
+    ) +
+    enter_fade() + 
+    exit_shrink() +
+    ease_aes('sine-in-out') +
+    labs(title = 't = {closest_state}')
+  animate(circle_plot, renderer = gifski_renderer("circle_2.gif"), nframes = 10, 
+          height = 4, width = 4, units = "in", res = 750)
+}
+```
+
+![Barycenter image 2](barycentre_path_2.svg)
+
+Averaging all around the circumference (_i.e._ from $[-\pi,\pi]$) returns the average pull that moves at speed $x$ and pulls the barycentre in its direction. The normalization of this (dividing by the $2\pi$ of the circumference's length) corresponds to $\mathbb{P}(X =x)$. 
+
+Hence the inversion theorem for discrete random variables follows: 
+
+$$
+\mathbb{P}(X = x_k) = \frac{1}{2\pi} \int\limits_{-\pi}^{\pi} e^{-itx_k} \phi(t) dt.
+$$
+
+So, what do you think? Has the geometric interpretation helped you in understanding the characteristic function? Let me know! 
+
+# References
+
