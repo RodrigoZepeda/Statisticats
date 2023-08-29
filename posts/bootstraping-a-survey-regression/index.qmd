@@ -1,11 +1,12 @@
 ---
 title: "Bootstrapping a survey regression"
-date: "2023-06-13"
+date: "2023-08-29"
 categories: [R, bootstrap, statistical-inference, survey analysis, survey]
 image: "boot.jpg"
 lang: en
 draft: false
 abstract: "In this entry I discuss how to estimate regression coefficients using *bootstrapped* samples. This allows to calculate regressions even for cases where the `survey` function is not available."
+bibliography: references.bib
 crossref:
   eq-prefix: equation
 format:
@@ -19,26 +20,31 @@ format:
 ```{r}
 #| message: false
 #| warning: false
-pacman::p_load(survey, surveybootstrap, svrep, matrixStats, modelsummary)
+pacman::p_load(survey, svrep, matrixStats, modelsummary)
 ```
 
 The main idea behind bootstrap is that resampling the random sample allows us to generate replicates of the sampling process itself. Using these re-sampled data, we can generate our desired estimators. These estimators will be asymptotically equivalent to the desired quantities.
 
 ### Bootstraping a mean
 
-As an example, consider a random sample of `n = 1000` samples from a $Normal(0,1)$ distribution.
+As an example, consider a random sample of `n = 1000` samples from a $Normal(0,1)$ distribution:
+$$
+\{X_1, X_2, \dots, X_n\} \text{ with } X_i\sim \text{Normal}(0,1)
+$$
+
+In `R` this can be obtained as:
 
 ```{r}
 samples <- rnorm(1000)
 ```
 
-One can estimate the mean classicaly with $\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i$:
+One can estimate the mean with the classical estimator, $\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$:
 
 ```{r}
 mean(samples)
 ```
 
-The confidence intervals are given by:
+In `R` this has already been programmed as:
 
 ```{r}
 t.test(samples)$conf.int
@@ -57,14 +63,42 @@ for (i in 1:1000){
 mean(resample_means)
 ```
 
-The quantiles are calculated in a similar fashion:
+The **Wald-type** confidence intervals at level $(1-\alpha)\times 100\%$ are given by:
+$$
+\bar{X}\pm t_{1-\alpha/2}\sqrt{\widehat{\textrm{Var}}_{\text{Boot}}(\bar{X})}
+$$
+where the unbiased estimator of the variance is:
+
+$$
+\widehat{\textrm{Var}}_{\text{Boot}}(\bar{X}) = \sum\limits_{i = 1}^{n} (\bar{X}_{\text{Boot},i} - \bar{X})^2
+$$
+
+where $\bar{X}_{\text{Boot},i}$ is the estimate of the mean in the $i$-th bootstrap sample. 
+
+In `R`, these confidence intervals can be computed as:
+```{r}
+mu_estim  <- mean(resample_means)
+var_estim <- var(resample_means)
+t_1_alpha <- qt(1 - 0.05/2, df = 1000)
+ci_wald   <- c("Lower" = mu_estim - t_1_alpha*sqrt(var_estim), 
+               "Upper" = mu_estim + t_1_alpha*sqrt(var_estim))
+```
+
+> Notice that the formula is not divided by $n$ as we are estimating the standard error of the variance for the **mean** statistic and not of the $X_i$. Intuitively, it makes sense **not** to divide by the number of bootstrap samples. If we did we could then artificially decrease uncertainty around estimates just by taking more boostrap samples without gathering more data!
+
+Another type of confidence intervals ([not recommended](https://stats.stackexchange.com/a/357498/81181)) is the **percentile confidence interval** given by the $\alpha/2$ and $1 - \alpha/2$ sample-percentiles of the bootstrap sample:
+
+$$
+[\bar{X}_{\text{Boot}, (\alpha/2)}, \bar{X}_{\text{Boot}, (1 - \alpha/2)}]
+$$
+In `R`:
 
 ```{r}
 #Bootstrap estimate:
 quantile(resample_means, c(0.025, 0.975))
 ```
 
-These are excelent estimates of the quantity of interest!
+In this particular case, they all are excellent estimates for our quantity of interest:
 
 ```{r}
 #| message: false
@@ -74,10 +108,12 @@ library(ggplot2)
 library(wesanderson)
 
 data.frame(
-  type = c("Classical (MLE)", "Bootstrap"),
-  mean = c(mean(samples), mean(resample_means)),
-  lower = c(t.test(samples)$conf.int[1], quantile(resample_means, c(0.025))),
-  upper = c(t.test(samples)$conf.int[2], quantile(resample_means, c(0.975)))
+  type = c("Classical (MLE)", "Percentile","Wald-type"),
+  mean = c(mean(samples), mean(resample_means),  mean(resample_means)),
+  lower = c(t.test(samples)$conf.int[1], quantile(resample_means, c(0.025)),
+            ci_wald["Lower"]),
+  upper = c(t.test(samples)$conf.int[2], quantile(resample_means, c(0.975)),
+            ci_wald["Upper"])
 ) |>
   ggplot() +
   geom_errorbar(aes(xmin = lower, y = type, xmax = upper, color = type)) +
@@ -90,7 +126,8 @@ data.frame(
   ) +
   theme(legend.position = "none") +
   geom_vline(aes(xintercept = 0), linetype = "dashed") +
-  annotate("label", x = 0, y = 1.5, label = "True value")
+  annotate("label", x = 0, y = 1.5, label = "True value") +
+  scale_y_discrete(labels = rev)
 ```
 
 ## Generating bootstrap samples for surveys
@@ -112,16 +149,15 @@ svymean(~api00, clus1)
 To change into bootstrap mode one has only to replicate the design
 
 ```{r}
-boot_clus1 <- as_bootstrap_design(clus1, type = "Rao-Wu-Yue-Beaumont",   
-                                  replicates = 1000)
-svymean(~api00, boot_clus1) #Mean but now using 500 re-samples
+boot_clus1 <- as_bootstrap_design(clus1, replicates = 1000)
+svymean(~api00, boot_clus1) #Mean but now using 1000 re-samples
 ```
 
-Notice that we had to use the design to generate the replicates. This is an important thing to keep in mind as for complex surveys one cannot simply resample without considering the design [(see this review)](http://dx.doi.org/10.1214/16-SS113).
+Notice that we had to use the design to generate the replicates. This is an important thing to keep in mind as for complex surveys one cannot simply resample without considering the design [@mashreghi2016survey](http://dx.doi.org/10.1214/16-SS113).
 
 ## Playing with the bootstrapped sample
 
-Now, what happens if we actually need to obtain the replicates (and use them!). For example, when implementing a model that is not already pre-programmed as part of the survey package. In that case, we'll need to use `surveybootstrap` and apply our model to the different estimates. As an example, consider replicating the following linear regression model:
+Now, what happens if we actually need to obtain the replicates (and use them!). For example, when implementing a model that is not already pre-programmed as part of the survey package. In that case, we'll need to use `weights` and apply a weighted version of the model to the different estimates. As an example, consider replicating the following linear regression model:
 
 ```{r}
 #| warning: false
@@ -149,21 +185,20 @@ regmodel2 |>
 ```
 
 
-The `surveybootstrap` package allows us to obtain a list of `data.frames` each of them representing the bootstrapped sample.
+The `svyrep` package allows us to obtain a `data.frame` of replicate `weights` each of them representing the bootstrapped sample.
 
 ```{r}
-#We'll create 1000 replicates (probably should do more for your analysis)
-replicates <- srs.bootstrap.sample(clus1, num.reps = 1000)
+#Get the replicate weights
+rep_weights <- weights(boot_clus1)
 ```
 
 We then loop through each of the estimates and compute the variables of interest. In this case, we'll compute and save the coefficients of the regression:
 
 ```{r}
-coefficients <- matrix(NA, nrow = length(replicates), ncol = 3)
-for (i in 1:length(replicates)){
-  resampled_data <-  apiclus1[replicates[[i]]$index, ]
-  model <- lm(api00 ~ ell + meals, data = resampled_data, 
-              weights = resampled_data$pw*replicates[[i]]$weight.scale)
+coefficients <- matrix(NA, nrow = ncol(rep_weights), ncol = 3)
+for (i in 1:ncol(rep_weights)){
+  model <- lm(api00 ~ ell + meals, data = apiclus1, 
+              weights = rep_weights[,i])
   coefficients[i,] <- coef(model)
 }
 ```
@@ -171,10 +206,35 @@ for (i in 1:length(replicates)){
 Finally we aggregate the data:
 
 ```{r}
-data.frame("estimates" =  coefficients |> colMeans(),
-           "sd" = coefficients |> colSds(),
-           "lower_ci"  =  coefficients |> colQuantiles(probs = 0.025),
-           "upper_ci"  =  coefficients |> colQuantiles(probs = 0.975)) 
+df <- data.frame("variable" = names(coef(model)),
+                 "estimates" =  coefficients |> colMeans(),
+                 "sd" = coefficients |> colSds())
+```
+
+## Confidence intervals
+
+Following @arnab2017survey we can estimate both types of confidence intervals for a complex survey design:
+
+### Wald-type confidence intervals
+
+Wald-type confidence intervals can be estimated with the variance:
+
+```{r}
+data.frame("variable" = names(coef(model)),
+           "estimates" =  colMeans(coefficients),
+           "var" = colVars(coefficients),
+           "ci_low" = colMeans(coefficients) - t_1_alpha*sqrt(colVars(coefficients)),
+           "ci_up" = colMeans(coefficients) + t_1_alpha*sqrt(colVars(coefficients)))
+```
+
+### Quantile confidence intervals
+
+Quantile confidence intervals can be estimated with the variance:
+
+```{r}
+data.frame("variable" = names(coef(model)),
+           "lower_quantile_ci"  =  coefficients |> colQuantiles(probs = 0.025),
+           "upper_quantile_ci"  =  coefficients |> colQuantiles(probs = 0.975))  
 ```
 
 And that's it!
@@ -182,3 +242,5 @@ And that's it!
 ## Epilogue
 
 A quick note: percentile estimators of the confidence intervals are highly prevalent in the literature and seem widely accepted within the sciences (at least ecology and epidemiology). Albeit, to my knowledge, there is no final proof that these intervals work as intended. [Wu and Rao](https://www.tandfonline.com/doi/epdf/10.1080/01621459.1988.10478591?needAccess=true) argue for a different method (the `t` method). However, [Z. Mashreghi et al]((http://dx.doi.org/10.1214/16-SS113)) states: "it is not clear that the other types of bootstrap confidence intervals (percentile or t) could be used with either of these methods since they are based on sampling schemes designed to match the variability of the estimator, but not its distribution". 
+
+## References
