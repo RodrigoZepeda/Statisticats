@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/intensidad-espacial-mx/index.html",
       "/posts/bootstraping-a-survey-regression/index.html",
       "/posts/characteristic-function-definetti/index.html",
       "/posts/memoise/index.html",
